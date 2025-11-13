@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling Test - FactSaura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2563EB;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success { background: #D1FAE5; color: #065F46; }
+        .error { background: #FEE2E2; color: #991B1B; }
+        .loading { background: #DBEAFE; color: #1E40AF; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Error Handling & Retry Test</h1>
+    <p>This page tests the error handling and retry functionality of the FactSaura API service.</p>
+
+    <div class="test-section">
+        <h2>🔗 API Connectivity Tests</h2>
+        <button class="test-button" onclick="testNormalAPI()">✅ Test Normal API Call</button>
+        <button class="test-button" onclick="testNetworkError()">📡 Test Network Error</button>
+        <button class="test-button" onclick="testTimeoutError()">⏱️ Test Timeout Error</button>
+        <button class="test-button" onclick="testServerError()">🚨 Test Server Error</button>
+        <div id="api-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔄 Retry Mechanism Tests</h2>
+        <button class="test-button" onclick="testRetrySuccess()">✅ Test Retry Success</button>
+        <button class="test-button" onclick="testRetryFailure()">❌ Test Retry Failure</button>
+        <button class="test-button" onclick="testManualRetry()">🔄 Test Manual Retry</button>
+        <div id="retry-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📄 Pagination Error Tests</h2>
+        <button class="test-button" onclick="testPaginationError()">📄 Test Pagination Error</button>
+        <button class="test-button" onclick="testLoadMoreRetry()">🔄 Test Load More Retry</button>
+        <div id="pagination-result" class="result"></div>
+    </div>
+
+    <script type="module">
+        // Import the API service
+        import { postsAPI, APIError } from './src/services/api.js';
+
+        // Make functions available globally
+        window.postsAPI = postsAPI;
+        window.APIError = APIError;
+
+        // Test functions
+        window.testNormalAPI = async function() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing normal API call...';
+
+            try {
+                const response = await postsAPI.getPosts({ limit: 5 });
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Success: Loaded ${response.data?.posts?.length || 0} posts`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        };
+
+        window.testNetworkError = async function() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing network error...';
+
+            // Temporarily change API base URL to simulate network error
+            const originalFetch = window.fetch;
+            window.fetch = () => Promise.reject(new TypeError('Failed to fetch'));
+
+            try {
+                await postsAPI.getPosts({ limit: 5 });
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Test failed: Should have thrown network error';
+            } catch (error) {
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Network error caught: ${error.message} (Type: ${error.code || 'N/A'})`;
+            } finally {
+                window.fetch = originalFetch;
+            }
+        };
+
+        window.testTimeoutError = async function() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing timeout error...';
+
+            // Mock fetch to simulate timeout
+            const originalFetch = window.fetch;
+            window.fetch = () => new Promise(() => {}); // Never resolves
+
+            try {
+                await postsAPI.getPosts({ limit: 5 });
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Test failed: Should have thrown timeout error';
+            } catch (error) {
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Timeout error caught: ${error.message} (Type: ${error.code || 'N/A'})`;
+            } finally {
+                window.fetch = originalFetch;
+            }
+        };
+
+        window.testServerError = async function() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing server error...';
+
+            // Mock fetch to return 500 error
+            const originalFetch = window.fetch;
+            window.fetch = () => Promise.resolve({
+                ok: false,
+                status: 500,
+                headers: { get: () => 'application/json' },
+                json: () => Promise.resolve({ error: { message: 'Internal Server Error', code: 'SERVER_ERROR' } })
+            });
+
+            try {
+                await postsAPI.getPosts({ limit: 5 });
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Test failed: Should have thrown server error';
+            } catch (error) {
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Server error caught: ${error.message} (Status: ${error.status}, Type: ${error.code})`;
+            } finally {
+                window.fetch = originalFetch;
+            }
+        };
+
+        window.testRetrySuccess = async function() {
+            const resultDiv = document.getElementById('retry-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing retry success scenario...';
+
+            let attemptCount = 0;
+            const originalFetch = window.fetch;
+            
+            window.fetch = (url, options) => {
+                attemptCount++;
+                if (attemptCount <= 2) {
+                    // Fail first 2 attempts
+                    return Promise.reject(new TypeError('Network error'));
+                } else {
+                    // Succeed on 3rd attempt
+                    return originalFetch(url, options);
+                }
+            };
+
+            try {
+                const response = await postsAPI.getPosts({ limit: 5 });
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Retry success: Succeeded after ${attemptCount} attempts`;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Retry failed: ${error.message} (Attempts: ${attemptCount})`;
+            } finally {
+                window.fetch = originalFetch;
+            }
+        };
+
+        window.testRetryFailure = async function() {
+            const resultDiv = document.getElementById('retry-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing retry failure scenario...';
+
+            let attemptCount = 0;
+            const originalFetch = window.fetch;
+            
+            window.fetch = () => {
+                attemptCount++;
+                return Promise.reject(new TypeError('Persistent network error'));
+            };
+
+            try {
+                await postsAPI.getPosts({ limit: 5 });
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Test failed: Should have failed after max retries';
+            } catch (error) {
+                resultDiv.className = 'result success';
+                resultDiv.textContent = `✅ Retry failure: Failed after ${attemptCount} attempts - ${error.message}`;
+            } finally {
+                window.fetch = originalFetch;
+            }
+        };
+
+        window.testManualRetry = async function() {
+            const resultDiv = document.getElementById('retry-result');
+            resultDiv.className = 'result success';
+            resultDiv.textContent = '✅ Manual retry test: Check the main app Feed component for manual retry button functionality';
+        };
+
+        window.testPaginationError = async function() {
+            const resultDiv = document.getElementById('pagination-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing pagination error...';
+
+            // This would be tested in the actual Feed component
+            resultDiv.className = 'result success';
+            resultDiv.textContent = '✅ Pagination error test: Check the main app Feed component for "Load More" error handling';
+        };
+
+        window.testLoadMoreRetry = async function() {
+            const resultDiv = document.getElementById('pagination-result');
+            resultDiv.className = 'result loading';
+            resultDiv.textContent = '🔄 Testing load more retry...';
+
+            // This would be tested in the actual Feed component
+            resultDiv.className = 'result success';
+            resultDiv.textContent = '✅ Load more retry test: Check the main app Feed component for pagination retry functionality';
+        };
+
+        // Auto-run basic connectivity test
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(testNormalAPI, 1000);
+        });
+    </script>
+</body>
+</html>

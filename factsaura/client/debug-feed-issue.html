@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Feed Issue</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .debug-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+
+        .error {
+            background: #fee;
+            border-color: #fcc;
+            color: #c33;
+        }
+
+        .success {
+            background: #efe;
+            border-color: #cfc;
+            color: #3c3;
+        }
+
+        .loading {
+            background: #fef;
+            border-color: #fcf;
+            color: #c3c;
+        }
+
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #005a87;
+        }
+
+        .post-card {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .post-content {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .post-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>FactSaura Feed Debug Tool</h1>
+
+        <div class="debug-section">
+            <h3>Step 1: API Connectivity Test</h3>
+            <button onclick="testAPIConnectivity()">Test API Connection</button>
+            <div id="connectivity-result"></div>
+        </div>
+
+        <div class="debug-section">
+            <h3>Step 2: Fetch Posts Data</h3>
+            <button onclick="fetchPostsData()">Fetch Posts</button>
+            <div id="fetch-result"></div>
+        </div>
+
+        <div class="debug-section">
+            <h3>Step 3: Render Posts</h3>
+            <button onclick="renderPosts()">Render Posts</button>
+            <div id="render-result"></div>
+        </div>
+
+        <div class="debug-section">
+            <h3>Step 4: Posts Display</h3>
+            <div id="posts-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let fetchedData = null;
+
+        // Step 1: Test API Connectivity
+        async function testAPIConnectivity() {
+            const resultDiv = document.getElementById('connectivity-result');
+            resultDiv.innerHTML = '<div class="loading">Testing API connectivity...</div>';
+
+            try {
+                // Test health endpoint
+                console.log('🔍 Testing health endpoint...');
+                const healthResponse = await fetch('http://localhost:3001/health');
+                const healthData = await healthResponse.json();
+                console.log('✅ Health check:', healthData);
+
+                // Test posts endpoint
+                console.log('🔍 Testing posts endpoint...');
+                const postsResponse = await fetch('http://localhost:3001/api/posts?limit=1');
+                const postsData = await postsResponse.json();
+                console.log('✅ Posts API:', postsData);
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ API Connectivity: SUCCESS</h4>
+                        <p><strong>Health Status:</strong> ${healthData.status}</p>
+                        <p><strong>Posts API:</strong> ${postsData.success ? 'Working' : 'Failed'}</p>
+                        <p><strong>Posts Count:</strong> ${postsData.data?.posts?.length || 0}</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('❌ API connectivity failed:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ API Connectivity: FAILED</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Type:</strong> ${error.name}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Step 2: Fetch Posts Data
+        async function fetchPostsData() {
+            const resultDiv = document.getElementById('fetch-result');
+            resultDiv.innerHTML = '<div class="loading">Fetching posts data...</div>';
+
+            try {
+                console.log('🔄 Fetching posts with params:', { page: 1, limit: 10 });
+
+                const response = await fetch('http://localhost:3001/api/posts?page=1&limit=10');
+                const data = await response.json();
+
+                console.log('📦 Fetched Data:', data);
+                fetchedData = data;
+
+                if (data.success && data.data && data.data.posts) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Data Fetch: SUCCESS</h4>
+                            <p><strong>Posts Found:</strong> ${data.data.posts.length}</p>
+                            <p><strong>Has More:</strong> ${data.data.pagination?.has_more ? 'Yes' : 'No'}</p>
+                            <p><strong>Current Page:</strong> ${data.data.pagination?.current_page || 1}</p>
+                            <details>
+                                <summary>Raw Response Data</summary>
+                                <pre>${JSON.stringify(data, null, 2)}</pre>
+                            </details>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                console.error('❌ Error fetching posts:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Data Fetch: FAILED</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Type:</strong> ${error.name}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Step 3: Render Posts
+        function renderPosts() {
+            const resultDiv = document.getElementById('render-result');
+            const postsContainer = document.getElementById('posts-container');
+
+            if (!fetchedData || !fetchedData.data || !fetchedData.data.posts) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Render: NO DATA</h4>
+                        <p>Please fetch posts data first</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const posts = fetchedData.data.posts;
+                console.log('🎨 Render Feed:', posts);
+
+                if (posts.length === 0) {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>⚠️ Render: EMPTY ARRAY</h4>
+                            <p>Posts array is empty</p>
+                        </div>
+                    `;
+                    postsContainer.innerHTML = '<p>No posts to display</p>';
+                    return;
+                }
+
+                // Clear previous content
+                postsContainer.innerHTML = '';
+
+                // Render each post
+                posts.forEach((post, index) => {
+                    console.log(`🎨 Rendering post ${index + 1}:`, post);
+
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post-card';
+                    postElement.innerHTML = `
+                        <div class="post-title">${post.title || 'No Title'}</div>
+                        <div class="post-content">${post.content || 'No Content'}</div>
+                        <div class="post-meta">
+                            <span>Type: ${post.type || 'unknown'}</span> • 
+                            <span>Created: ${new Date(post.created_at).toLocaleString()}</span> • 
+                            <span>AI Confidence: ${Math.round((post.ai_analysis?.confidence_score || 0) * 100)}%</span>
+                        </div>
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Render: SUCCESS</h4>
+                        <p><strong>Posts Rendered:</strong> ${posts.length}</p>
+                        <p><strong>Visible Posts:</strong> Check below</p>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('❌ Error rendering posts:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Render: FAILED</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Type:</strong> ${error.name}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run connectivity test on page load
+        window.addEventListener('load', () => {
+            console.log('🚀 Debug tool loaded');
+            testAPIConnectivity();
+        });
+    </script>
+</body>
+
+</html>

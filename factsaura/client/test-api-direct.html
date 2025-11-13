@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .loading { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .post-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .post-title { font-weight: bold; color: #333; margin-bottom: 10px; }
+        .post-content { color: #666; margin-bottom: 10px; }
+        .post-meta { font-size: 12px; color: #999; }
+        .ai-analysis { 
+            background: #e3f2fd; 
+            padding: 10px; 
+            border-radius: 4px; 
+            margin-top: 10px;
+            border-left: 4px solid #2196f3;
+        }
+        .confidence-score {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .confidence-high { background: #d4edda; color: #155724; }
+        .confidence-medium { background: #fff3cd; color: #856404; }
+        .confidence-low { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>FactSaura API Direct Test</h1>
+    <p>Testing direct API connectivity and post display functionality</p>
+
+    <div class="test-section">
+        <h2>1. Backend Health Check</h2>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <div id="health-status"></div>
+        <pre id="health-response"></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Posts API Test</h2>
+        <button onclick="testPosts()">Fetch Posts</button>
+        <button onclick="testPostsWithFilters()">Fetch with Filters</button>
+        <div id="posts-status"></div>
+        <pre id="posts-response"></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Posts Display Test</h2>
+        <button onclick="displayPosts()">Display Posts as Cards</button>
+        <div id="posts-display-status"></div>
+        <div id="posts-cards"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Create Post Test</h2>
+        <button onclick="createTestPost()">Create Test Post</button>
+        <div id="create-status"></div>
+        <pre id="create-response"></pre>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+
+        function setStatus(elementId, message, type = 'loading') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function setResponse(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function testHealth() {
+            setStatus('health-status', 'Testing health endpoint...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    setStatus('health-status', '✅ Health check passed!', 'success');
+                    setResponse('health-response', data);
+                } else {
+                    setStatus('health-status', `❌ Health check failed: ${response.status}`, 'error');
+                    setResponse('health-response', data);
+                }
+            } catch (error) {
+                setStatus('health-status', `❌ Network error: ${error.message}`, 'error');
+                setResponse('health-response', { error: error.message });
+            }
+        }
+
+        async function testPosts() {
+            setStatus('posts-status', 'Fetching posts...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/posts`);
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const postsCount = data.data.posts.length;
+                    setStatus('posts-status', `✅ Successfully fetched ${postsCount} posts!`, 'success');
+                    setResponse('posts-response', data);
+                } else {
+                    setStatus('posts-status', `❌ Failed to fetch posts: ${data.error?.message || 'Unknown error'}`, 'error');
+                    setResponse('posts-response', data);
+                }
+            } catch (error) {
+                setStatus('posts-status', `❌ Network error: ${error.message}`, 'error');
+                setResponse('posts-response', { error: error.message });
+            }
+        }
+
+        async function testPostsWithFilters() {
+            setStatus('posts-status', 'Fetching posts with filters...', 'loading');
+            
+            try {
+                const params = new URLSearchParams({
+                    limit: 5,
+                    sort_by: 'created_at',
+                    sort_order: 'desc'
+                });
+                
+                const response = await fetch(`${API_BASE}/api/posts?${params}`);
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const postsCount = data.data.posts.length;
+                    setStatus('posts-status', `✅ Successfully fetched ${postsCount} posts with filters!`, 'success');
+                    setResponse('posts-response', data);
+                } else {
+                    setStatus('posts-status', `❌ Failed to fetch posts: ${data.error?.message || 'Unknown error'}`, 'error');
+                    setResponse('posts-response', data);
+                }
+            } catch (error) {
+                setStatus('posts-status', `❌ Network error: ${error.message}`, 'error');
+                setResponse('posts-response', { error: error.message });
+            }
+        }
+
+        async function displayPosts() {
+            setStatus('posts-display-status', 'Fetching and displaying posts...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/posts?limit=5`);
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const posts = data.data.posts;
+                    const cardsContainer = document.getElementById('posts-cards');
+                    
+                    if (posts.length === 0) {
+                        setStatus('posts-display-status', '📭 No posts found', 'error');
+                        cardsContainer.innerHTML = '<p>No posts to display</p>';
+                        return;
+                    }
+                    
+                    setStatus('posts-display-status', `✅ Displaying ${posts.length} posts as cards!`, 'success');
+                    
+                    cardsContainer.innerHTML = posts.map(post => {
+                        const confidence = post.ai_analysis?.confidence_score || 0;
+                        const confidenceClass = confidence >= 0.7 ? 'confidence-high' : 
+                                              confidence >= 0.4 ? 'confidence-medium' : 'confidence-low';
+                        
+                        const urgencyEmoji = {
+                            'critical': '🔴',
+                            'high': '🟡', 
+                            'medium': '🔵',
+                            'low': '🟢'
+                        }[post.crisis_context?.urgency_level] || '⚪';
+                        
+                        return `
+                            <div class="post-card">
+                                <div class="post-title">
+                                    ${urgencyEmoji} ${post.title}
+                                    ${post.ai_analysis?.is_misinformation ? '⚠️' : '✅'}
+                                </div>
+                                <div class="post-content">${post.content}</div>
+                                <div class="post-meta">
+                                    <strong>Type:</strong> ${post.type} | 
+                                    <strong>Created:</strong> ${new Date(post.created_at).toLocaleString()} |
+                                    <strong>Author:</strong> ${post.author?.username || 'Unknown'}
+                                </div>
+                                <div class="ai-analysis">
+                                    <strong>AI Analysis:</strong>
+                                    <span class="confidence-score ${confidenceClass}">
+                                        ${Math.round(confidence * 100)}% confidence
+                                    </span>
+                                    <br>
+                                    <strong>Misinformation:</strong> ${post.ai_analysis?.is_misinformation ? 'Yes' : 'No'}<br>
+                                    <strong>Explanation:</strong> ${post.ai_analysis?.explanation || 'No explanation available'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    setStatus('posts-display-status', `❌ Failed to fetch posts: ${data.error?.message || 'Unknown error'}`, 'error');
+                    document.getElementById('posts-cards').innerHTML = '';
+                }
+            } catch (error) {
+                setStatus('posts-display-status', `❌ Network error: ${error.message}`, 'error');
+                document.getElementById('posts-cards').innerHTML = '';
+            }
+        }
+
+        async function createTestPost() {
+            setStatus('create-status', 'Creating test post...', 'loading');
+            
+            const testPost = {
+                title: `Test Post - ${new Date().toLocaleTimeString()}`,
+                content: `This is a test post created at ${new Date().toLocaleString()} to verify the create post functionality.`,
+                content_type: 'text'
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testPost)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    setStatus('create-status', '✅ Test post created successfully!', 'success');
+                    setResponse('create-response', data);
+                } else {
+                    setStatus('create-status', `❌ Failed to create post: ${data.error?.message || 'Unknown error'}`, 'error');
+                    setResponse('create-response', data);
+                }
+            } catch (error) {
+                setStatus('create-status', `❌ Network error: ${error.message}`, 'error');
+                setResponse('create-response', { error: error.message });
+            }
+        }
+
+        // Auto-run health check on page load
+        window.addEventListener('load', () => {
+            testHealth();
+        });
+    </script>
+</body>
+</html>

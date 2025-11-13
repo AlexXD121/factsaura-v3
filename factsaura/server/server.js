@@ -2,8 +2,38 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
 const config = require('./config');
+
+// Import basic middleware
+const rateLimit = require('express-rate-limit');
+
+// Simple rate limiter
+const generalApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+// Simple error handler
+const errorHandler = (err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || 'Internal server error',
+      code: err.code || 'INTERNAL_ERROR'
+    }
+  });
+};
+
+// Simple 404 handler
+const notFoundHandler = (req, res) => {
+  res.status(404).json({
+    error: {
+      message: 'Route not found',
+      code: 'NOT_FOUND'
+    }
+  });
+};
 
 const app = express();
 const PORT = config.port;
@@ -12,16 +42,11 @@ const PORT = config.port;
 app.use(helmet());
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: config.rateLimit.windowMs,
-  max: config.rateLimit.maxRequests,
-  message: 'Too many requests from this IP, please try again later.'
-});
-app.use(limiter);
+app.use(generalApiLimiter);
 
 // CORS configuration
 app.use(cors({
-  origin: config.frontendUrl,
+  origin: [config.frontendUrl, 'http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 }));
 
@@ -34,6 +59,9 @@ app.use(morgan('combined'));
 
 // Import routes
 const apiRoutes = require('./routes');
+
+// Import and initialize content scraping scheduler
+const { initializeScheduler } = require('./controllers/contentScrapingController');
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -48,37 +76,19 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api', apiRoutes);
 
-// Global error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err.stack);
-  
-  // Default error response
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-  
-  res.status(statusCode).json({
-    error: {
-      code: err.code || 'INTERNAL_ERROR',
-      message: message,
-      ...(config.nodeEnv === 'development' && { stack: err.stack })
-    }
-  });
-});
+// 404 handler for undefined routes
+app.use(notFoundHandler);
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    error: {
-      code: 'NOT_FOUND',
-      message: 'Endpoint not found'
-    }
-  });
-});
+// Global error handling middleware
+app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 FactSaura backend server running on port ${PORT}`);
   console.log(`📊 Health check available at http://localhost:${PORT}/health`);
+
+  // Initialize content scraping scheduler
+  initializeScheduler();
 });
 
 module.exports = app;

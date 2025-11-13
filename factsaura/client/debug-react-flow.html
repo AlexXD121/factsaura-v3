@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug React Flow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .console-log {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .state-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Debug React Flow</h1>
+    <p>Simulating the exact React usePosts hook flow</p>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="console-output" class="console-log">Starting React flow simulation...\n</div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <div class="test-section">
+        <h2>React State Simulation</h2>
+        <button onclick="simulateReactFlow()">Simulate React Flow</button>
+        <div id="react-status"></div>
+        <div id="state-display" class="state-display"></div>
+    </div>
+
+    <script>
+        // Simulate the exact React environment
+        const API_BASE_URL = 'http://localhost:3001/api';
+
+        // React state simulation
+        let reactState = {
+            posts: [],
+            loading: true,
+            error: null,
+            pagination: null,
+            filters: null,
+            refreshing: false,
+            lastUpdated: null,
+            paginationError: null,
+            params: {
+                page: 1,
+                limit: 20,
+                sort_by: 'created_at',
+                sort_order: 'desc'
+            }
+        };
+
+        function log(message) {
+            const console_output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            console_output.textContent += `[${timestamp}] ${message}\n`;
+            console_output.scrollTop = console_output.scrollHeight;
+            console.log(message);
+        }
+
+        function clearConsole() {
+            document.getElementById('console-output').textContent = 'Console cleared...\n';
+        }
+
+        function updateStateDisplay() {
+            const stateDisplay = document.getElementById('state-display');
+            stateDisplay.innerHTML = `
+                <h4>React State:</h4>
+                <div><strong>Posts:</strong> ${reactState.posts.length} items</div>
+                <div><strong>Loading:</strong> ${reactState.loading}</div>
+                <div><strong>Error:</strong> ${reactState.error ? JSON.stringify(reactState.error) : 'null'}</div>
+                <div><strong>Pagination:</strong> ${reactState.pagination ? JSON.stringify(reactState.pagination) : 'null'}</div>
+                <div><strong>isEmpty:</strong> ${!reactState.loading && reactState.posts.length === 0}</div>
+                <div><strong>Should show posts:</strong> ${reactState.posts.length > 0}</div>
+                <div><strong>Should show empty:</strong> ${!reactState.loading && reactState.posts.length === 0 && !reactState.error}</div>
+                <div><strong>Should show error:</strong> ${!!reactState.error}</div>
+                <div><strong>Should show loading:</strong> ${reactState.loading && !reactState.refreshing}</div>
+            `;
+        }
+
+        // Simulate the exact API request that React would make
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                timeout: 30000,
+            };
+
+            const requestOptions = {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...options.headers,
+                },
+            };
+
+            log(`Making API request to: ${url}`);
+            log(`Request options: ${JSON.stringify(requestOptions, null, 2)}`);
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), requestOptions.timeout);
+
+            const response = await fetch(url, {
+                ...requestOptions,
+                signal: controller.signal,
+            });
+
+            clearTimeout(timeoutId);
+
+            const contentType = response.headers.get('content-type');
+            let data;
+
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+
+            log(`Response status: ${response.status}`);
+            log(`Response data: ${JSON.stringify(data, null, 2)}`);
+
+            if (!response.ok) {
+                const errorMessage = data?.error?.message || data?.message || `HTTP ${response.status}`;
+                const errorCode = data?.error?.code || 'HTTP_ERROR';
+                throw new Error(`${errorMessage} (${errorCode})`);
+            }
+
+            return data;
+        }
+
+        // Simulate postsAPI.getPosts
+        async function getPosts(params = {}) {
+            const queryParams = new URLSearchParams({
+                page: params.page || 1,
+                limit: params.limit || 20,
+                sort_by: params.sort_by || 'created_at',
+                sort_order: params.sort_order || 'desc',
+                ...params
+            });
+
+            log(`getPosts called with params: ${JSON.stringify(params)}`);
+            log(`Query string: ${queryParams.toString()}`);
+
+            return apiRequest(`/posts?${queryParams}`);
+        }
+
+        // Simulate the exact fetchPosts function from usePosts
+        async function fetchPosts(newParams = {}, append = false, isRetry = false) {
+            try {
+                if (!append) {
+                    reactState.loading = true;
+                } else {
+                    reactState.refreshing = true;
+                }
+
+                if (!isRetry) {
+                    reactState.error = null;
+                }
+
+                const requestParams = { ...reactState.params, ...newParams };
+                log(`🔄 Fetching posts with params: ${JSON.stringify(requestParams)}`);
+
+                updateStateDisplay();
+
+                const response = await getPosts(requestParams);
+
+                if (response.success && response.data) {
+                    const { posts: newPosts, pagination: newPagination, filters: newFilters } = response.data;
+
+                    if (append) {
+                        reactState.posts = [...reactState.posts, ...newPosts];
+                    } else {
+                        reactState.posts = newPosts;
+                    }
+
+                    reactState.pagination = newPagination;
+                    reactState.filters = newFilters;
+                    reactState.params = requestParams;
+                    reactState.lastUpdated = new Date();
+                    reactState.error = null;
+                    reactState.paginationError = null;
+
+                    log(`✅ Loaded ${newPosts.length} posts`);
+                    log(`Total posts in state: ${reactState.posts.length}`);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (err) {
+                log(`❌ Error fetching posts: ${err.message}`);
+
+                let errorMessage = 'Failed to load posts';
+                let errorType = 'UNKNOWN';
+
+                if (err.message) {
+                    errorMessage = err.message;
+                    if (err.message.includes('fetch')) {
+                        errorType = 'NETWORK_ERROR';
+                        errorMessage = 'Network connection failed. Please check your internet connection.';
+                    }
+                }
+
+                if (append) {
+                    reactState.paginationError = {
+                        message: errorMessage,
+                        type: errorType,
+                        timestamp: new Date()
+                    };
+                } else {
+                    reactState.error = {
+                        message: errorMessage,
+                        type: errorType,
+                        retrying: false,
+                        canRetry: true
+                    };
+                    reactState.posts = [];
+                }
+            } finally {
+                reactState.loading = false;
+                reactState.refreshing = false;
+                updateStateDisplay();
+            }
+        }
+
+        async function simulateReactFlow() {
+            log('🚀 Starting React flow simulation...');
+
+            // Reset state
+            reactState = {
+                posts: [],
+                loading: true,
+                error: null,
+                pagination: null,
+                filters: null,
+                refreshing: false,
+                lastUpdated: null,
+                paginationError: null,
+                params: {
+                    page: 1,
+                    limit: 20,
+                    sort_by: 'created_at',
+                    sort_order: 'desc'
+                }
+            };
+
+            updateStateDisplay();
+
+            try {
+                // Simulate useEffect initial fetch
+                log('📱 Simulating useEffect initial fetch...');
+                await fetchPosts();
+
+                log('🎉 React flow simulation completed!');
+
+                // Show final state
+                log(`Final state: ${reactState.posts.length} posts, loading: ${reactState.loading}, error: ${!!reactState.error}`);
+
+                if (reactState.posts.length > 0) {
+                    log('✅ Posts should be visible in React app');
+                    document.getElementById('react-status').innerHTML = '<div class="status success">✅ React flow successful - posts should be visible!</div>';
+                } else if (reactState.error) {
+                    log('❌ Error state - error message should be visible');
+                    document.getElementById('react-status').innerHTML = '<div class="status error">❌ Error state - error message should be visible</div>';
+                } else {
+                    log('📭 Empty state - "No posts found" should be visible');
+                    document.getElementById('react-status').innerHTML = '<div class="status error">📭 Empty state - "No posts found" should be visible</div>';
+                }
+
+            } catch (error) {
+                log(`💥 React flow simulation failed: ${error.message}`);
+                document.getElementById('react-status').innerHTML = '<div class="status error">💥 React flow simulation failed</div>';
+            }
+        }
+
+        // Auto-run simulation on page load
+        window.addEventListener('load', () => {
+            log('Page loaded, starting simulation...');
+            setTimeout(simulateReactFlow, 1000);
+        });
+    </script>
+</body>
+
+</html>

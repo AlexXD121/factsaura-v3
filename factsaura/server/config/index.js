@@ -44,6 +44,20 @@ const config = {
     keywords: process.env.CRISIS_KEYWORDS ? 
       process.env.CRISIS_KEYWORDS.split(',').map(k => k.trim()) : 
       ['flood', 'earthquake', 'emergency', 'scam', 'fake', 'misinformation']
+  },
+
+  // External API Keys (managed by ApiKeyManager)
+  externalApis: {
+    newsApi: process.env.NEWSAPI_KEY,
+    reddit: {
+      clientId: process.env.REDDIT_CLIENT_ID,
+      clientSecret: process.env.REDDIT_CLIENT_SECRET,
+      username: process.env.REDDIT_USERNAME,
+      password: process.env.REDDIT_PASSWORD,
+      userAgent: process.env.REDDIT_USER_AGENT
+    },
+    googleFactCheck: process.env.GOOGLE_FACT_CHECK_API_KEY,
+    openai: process.env.OPENAI_API_KEY
   }
 };
 

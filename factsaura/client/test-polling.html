@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FactSaura Polling Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); }
+        .error { background: rgba(239, 68, 68, 0.2); }
+        .info { background: rgba(59, 130, 246, 0.2); }
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .active { background: #10b981; animation: pulse 2s infinite; }
+        .inactive { background: #6b7280; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 FactSaura Real-time Polling Test</h1>
+    
+    <div class="test-container">
+        <h2>Polling Status</h2>
+        <div id="polling-status" class="status info">
+            <span class="indicator inactive" id="polling-indicator"></span>
+            <span id="polling-text">Initializing...</span>
+        </div>
+        
+        <div>
+            <button onclick="startPolling()">Start Polling</button>
+            <button onclick="stopPolling()">Stop Polling</button>
+            <button onclick="testSingleRequest()">Test Single Request</button>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>API Test Results</h2>
+        <div id="api-status" class="status info">Ready to test</div>
+        <div id="last-update">Last update: Never</div>
+        <div id="post-count">Posts loaded: 0</div>
+    </div>
+
+    <div class="test-container">
+        <h2>Console Log</h2>
+        <div id="log" class="log">Waiting for activity...</div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3001/api';
+        let pollingInterval = null;
+        let pollCount = 0;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('log');
+            const colorMap = {
+                'info': '#60a5fa',
+                'success': '#10b981', 
+                'error': '#ef4444',
+                'warning': '#f59e0b'
+            };
+            
+            logElement.innerHTML += `<span style="color: ${colorMap[type]}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function updateStatus(text, isActive = false) {
+            const indicator = document.getElementById('polling-indicator');
+            const statusText = document.getElementById('polling-text');
+            
+            indicator.className = `indicator ${isActive ? 'active' : 'inactive'}`;
+            statusText.textContent = text;
+        }
+        
+        async function testSingleRequest() {
+            log('🔍 Testing single API request...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/posts?page=1&limit=5`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    const posts = data.data.posts || [];
+                    log(`✅ API request successful - ${posts.length} posts loaded`, 'success');
+                    
+                    document.getElementById('api-status').textContent = 'API Connection: Working';
+                    document.getElementById('api-status').className = 'status success';
+                    document.getElementById('post-count').textContent = `Posts loaded: ${posts.length}`;
+                    document.getElementById('last-update').textContent = `Last update: ${new Date().toLocaleTimeString()}`;
+                    
+                    return posts;
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                log(`❌ API request failed: ${error.message}`, 'error');
+                
+                document.getElementById('api-status').textContent = `API Connection: Failed - ${error.message}`;
+                document.getElementById('api-status').className = 'status error';
+                
+                throw error;
+            }
+        }
+        
+        function startPolling() {
+            if (pollingInterval) {
+                log('⚠️ Polling already active', 'warning');
+                return;
+            }
+            
+            log('🚀 Starting real-time polling (30 second interval)', 'info');
+            updateStatus('Polling active (30s interval)', true);
+            
+            // Test initial request
+            testSingleRequest().catch(() => {});
+            
+            // Start polling every 30 seconds
+            pollingInterval = setInterval(async () => {
+                pollCount++;
+                log(`🔄 Polling attempt #${pollCount}`, 'info');
+                
+                try {
+                    await testSingleRequest();
+                    log(`✅ Poll #${pollCount} completed successfully`, 'success');
+                } catch (error) {
+                    log(`❌ Poll #${pollCount} failed: ${error.message}`, 'error');
+                }
+            }, 30000); // 30 seconds
+        }
+        
+        function stopPolling() {
+            if (!pollingInterval) {
+                log('⚠️ Polling not active', 'warning');
+                return;
+            }
+            
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+            pollCount = 0;
+            
+            log('🛑 Polling stopped', 'info');
+            updateStatus('Polling stopped', false);
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = 'Log cleared...\n';
+        }
+        
+        // Initialize
+        log('🎯 FactSaura Polling Test initialized', 'info');
+        log('📡 Backend should be running on http://localhost:3001', 'info');
+        log('🔧 Click "Test Single Request" to verify API connectivity', 'info');
+        log('▶️ Click "Start Polling" to begin 30-second interval polling', 'info');
+    </script>
+</body>
+</html>

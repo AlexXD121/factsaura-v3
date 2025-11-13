@@ -30,7 +30,7 @@ function Home() {
     >
       {/* Hero Section */}
       <motion.div variants={itemVariants}>
-        <GlassCard variant="highlighted" padding="xl" className="text-center">
+        <div className="glass-card content-box p-12 text-center">
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -39,36 +39,36 @@ function Home() {
             <div className="mb-6">
               <span className="text-6xl">🔍</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-bold text-primary mb-6 leading-tight">
               Welcome to{' '}
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="text-info">
                 FactSaura
               </span>
             </h1>
-            <p className="text-white/90 text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
-              AI-powered misinformation detection platform with real-time community verification
+            <p className="text-secondary text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+              AI-powered misinformation detection with transparent analysis and community trust
             </p>
 
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <AnimatedButton variant="primary" size="xl" icon="🚀">
-                Get Started
+              <AnimatedButton variant="primary" size="xl" className="glass-button">
+                🚀 Get Started
               </AnimatedButton>
-              <AnimatedButton variant="outline" size="xl">
-                Learn More
+              <AnimatedButton variant="outline" size="xl" className="glass-button-outlined">
+                📚 Learn More
               </AnimatedButton>
             </div>
           </motion.div>
-        </GlassCard>
+        </div>
       </motion.div>
 
       {/* Features Grid */}
       <motion.div variants={itemVariants}>
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-bold text-primary mb-4">
             How FactSaura Works
           </h2>
-          <p className="text-white/70 text-lg">
-            Three pillars of our misinformation detection system
+          <p className="text-secondary text-lg">
+            Transparent AI analysis with community verification
           </p>
         </div>
         
@@ -77,67 +77,67 @@ function Home() {
             whileHover={{ y: -8 }}
             transition={{ duration: 0.3 }}
           >
-            <GlassCard crisisLevel="medium" padding="lg" className="h-full">
+            <div className="glass-card crisis-medium p-8 h-full">
               <div className="text-center">
                 <div className="text-5xl mb-6">🤖</div>
-                <h3 className="text-white font-bold text-xl mb-4">AI Detection</h3>
-                <p className="text-white/80 text-base mb-6 leading-relaxed">
-                  Advanced AI agents continuously monitor and analyze content for misinformation patterns
+                <h3 className="text-primary font-bold text-xl mb-4">AI Analysis</h3>
+                <p className="text-secondary text-base mb-6 leading-relaxed">
+                  Advanced AI provides step-by-step reasoning and confidence scoring for every analysis
                 </p>
                 <div className="flex justify-center">
                   <ConfidenceMeter confidence={0.92} size="md" />
                 </div>
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
 
           <motion.div
             whileHover={{ y: -8 }}
             transition={{ duration: 0.3 }}
           >
-            <GlassCard crisisLevel="high" padding="lg" className="h-full">
+            <div className="glass-card crisis-high p-8 h-full">
               <div className="text-center">
                 <div className="text-5xl mb-6">⚡</div>
-                <h3 className="text-white font-bold text-xl mb-4">Real-time Alerts</h3>
-                <p className="text-white/80 text-base mb-6 leading-relaxed">
-                  Get instant notifications about trending misinformation and verified fact-checks
+                <h3 className="text-primary font-bold text-xl mb-4">Crisis Detection</h3>
+                <p className="text-secondary text-base mb-6 leading-relaxed">
+                  Real-time monitoring for crisis-related misinformation with urgency-based alerts
                 </p>
                 <div className="flex justify-center">
                   <ConfidenceMeter confidence={0.78} size="md" />
                 </div>
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
 
           <motion.div
             whileHover={{ y: -8 }}
             transition={{ duration: 0.3 }}
           >
-            <GlassCard crisisLevel="critical" padding="lg" className="h-full">
+            <div className="glass-card crisis-critical p-8 h-full">
               <div className="text-center">
                 <div className="text-5xl mb-6">👥</div>
-                <h3 className="text-white font-bold text-xl mb-4">Community Driven</h3>
-                <p className="text-white/80 text-base mb-6 leading-relaxed">
-                  Join experts and community members in collaborative fact-checking efforts
+                <h3 className="text-primary font-bold text-xl mb-4">Community Trust</h3>
+                <p className="text-secondary text-base mb-6 leading-relaxed">
+                  Community voting and expert verification build trust scores for every piece of content
                 </p>
                 <div className="flex justify-center">
                   <ConfidenceMeter confidence={0.85} size="md" />
                 </div>
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
         </div>
       </motion.div>
 
       {/* Stats Section */}
       <motion.div variants={itemVariants}>
-        <GlassCard variant="subtle" padding="lg">
+        <div className="glass-card p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-2xl font-bold text-primary mb-2">
               Trusted by the Community
             </h2>
-            <p className="text-white/70">
-              Real-time statistics from our misinformation detection platform
+            <p className="text-secondary">
+              Real-time statistics from our AI-powered analysis platform
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -145,32 +145,32 @@ function Home() {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">1000+</div>
-              <div className="text-white/80 font-medium">Posts Analyzed</div>
+              <div className="text-4xl font-bold text-info mb-2">1000+</div>
+              <div className="text-secondary font-medium">Posts Analyzed</div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent mb-2">95%</div>
-              <div className="text-white/80 font-medium">Accuracy Rate</div>
+              <div className="text-4xl font-bold text-safe mb-2">95%</div>
+              <div className="text-secondary font-medium">AI Accuracy</div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">24/7</div>
-              <div className="text-white/80 font-medium">Monitoring</div>
+              <div className="text-4xl font-bold text-warning mb-2">24/7</div>
+              <div className="text-secondary font-medium">Analysis Ready</div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent mb-2">5min</div>
-              <div className="text-white/80 font-medium">Response Time</div>
+              <div className="text-4xl font-bold text-danger mb-2">3sec</div>
+              <div className="text-secondary font-medium">Response Time</div>
             </motion.div>
           </div>
-        </GlassCard>
+        </div>
       </motion.div>
     </motion.div>
   )

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .loading { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .post-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .console-log {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Frontend Debug Test</h1>
+    <p>Testing the exact same API calls that the React frontend should be making</p>
+
+    <div class="test-section">
+        <h2>Console Logs</h2>
+        <div id="console-output" class="console-log">Starting debug test...\n</div>
+        <button onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <div class="test-section">
+        <h2>1. Environment Variables Test</h2>
+        <button onclick="testEnvironment()">Test Environment</button>
+        <div id="env-status"></div>
+        <pre id="env-details"></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Direct API Test (Same as React)</h2>
+        <button onclick="testDirectAPI()">Test Direct API</button>
+        <div id="api-status"></div>
+        <pre id="api-response"></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Simulate React usePosts Hook</h2>
+        <button onclick="simulateUsePosts()">Simulate usePosts</button>
+        <div id="useposts-status"></div>
+        <div id="useposts-posts"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. CORS Test</h2>
+        <button onclick="testCORS()">Test CORS</button>
+        <div id="cors-status"></div>
+        <pre id="cors-details"></pre>
+    </div>
+
+    <script>
+        // Simulate the exact environment the React app would have
+        const API_BASE_URL = 'http://localhost:3001/api';
+
+        function log(message) {
+            const console_output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            console_output.textContent += `[${timestamp}] ${message}\n`;
+            console_output.scrollTop = console_output.scrollHeight;
+            console.log(message);
+        }
+
+        function clearConsole() {
+            document.getElementById('console-output').textContent = 'Console cleared...\n';
+        }
+
+        function setStatus(elementId, message, type = 'loading') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function setResponse(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Test 1: Environment Variables
+        function testEnvironment() {
+            log('Testing environment variables...');
+            setStatus('env-status', 'Checking environment...', 'loading');
+            
+            const env = {
+                API_BASE_URL: API_BASE_URL,
+                location: window.location.href,
+                userAgent: navigator.userAgent,
+                cookiesEnabled: navigator.cookieEnabled
+            };
+            
+            setStatus('env-status', '✅ Environment variables loaded', 'success');
+            setResponse('env-details', env);
+            log('Environment test completed');
+        }
+
+        // Test 2: Direct API Test (exactly like React)
+        async function testDirectAPI() {
+            log('Testing direct API call...');
+            setStatus('api-status', 'Calling API...', 'loading');
+            
+            try {
+                log(`Making request to: ${API_BASE_URL}/posts`);
+                
+                const response = await fetch(`${API_BASE_URL}/posts?limit=5`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log(`Response status: ${response.status}`);
+                log(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const postsCount = data.data.posts.length;
+                    setStatus('api-status', `✅ API working! Found ${postsCount} posts`, 'success');
+                    setResponse('api-response', {
+                        success: true,
+                        postsCount: postsCount,
+                        firstPost: data.data.posts[0] ? {
+                            id: data.data.posts[0].id,
+                            title: data.data.posts[0].title,
+                            content: data.data.posts[0].content.substring(0, 100) + '...'
+                        } : null
+                    });
+                    log(`API test successful: ${postsCount} posts found`);
+                } else {
+                    setStatus('api-status', `❌ API failed: ${data.error?.message || 'Unknown error'}`, 'error');
+                    setResponse('api-response', data);
+                    log(`API test failed: ${data.error?.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                setStatus('api-status', `❌ Network error: ${error.message}`, 'error');
+                setResponse('api-response', { error: error.message, stack: error.stack });
+                log(`API test error: ${error.message}`);
+            }
+        }
+
+        // Test 3: Simulate React usePosts Hook
+        async function simulateUsePosts() {
+            log('Simulating React usePosts hook...');
+            setStatus('useposts-status', 'Simulating usePosts...', 'loading');
+            
+            try {
+                // Simulate the exact same call that usePosts makes
+                const params = new URLSearchParams({
+                    page: 1,
+                    limit: 20,
+                    sort_by: 'created_at',
+                    sort_order: 'desc'
+                });
+
+                log(`usePosts would call: ${API_BASE_URL}/posts?${params}`);
+                
+                const response = await fetch(`${API_BASE_URL}/posts?${params}`);
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const posts = data.data.posts;
+                    setStatus('useposts-status', `✅ usePosts simulation successful! ${posts.length} posts`, 'success');
+                    
+                    // Display posts like React would
+                    const postsContainer = document.getElementById('useposts-posts');
+                    postsContainer.innerHTML = posts.slice(0, 3).map(post => {
+                        const aiAnalysis = post.ai_analysis || {};
+                        const crisisContext = post.crisis_context || {};
+                        
+                        return `
+                            <div class="post-card">
+                                <h3>${post.title}</h3>
+                                <p>${post.content}</p>
+                                <small>
+                                    Type: ${post.type} | 
+                                    Created: ${new Date(post.created_at).toLocaleString()} |
+                                    Confidence: ${Math.round((aiAnalysis.confidence_score || 0) * 100)}% |
+                                    Misinformation: ${aiAnalysis.is_misinformation ? 'Yes' : 'No'}
+                                </small>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    log(`usePosts simulation: ${posts.length} posts rendered`);
+                } else {
+                    setStatus('useposts-status', `❌ usePosts simulation failed: ${data.error?.message}`, 'error');
+                    log(`usePosts simulation failed: ${data.error?.message}`);
+                }
+            } catch (error) {
+                setStatus('useposts-status', `❌ usePosts simulation error: ${error.message}`, 'error');
+                log(`usePosts simulation error: ${error.message}`);
+            }
+        }
+
+        // Test 4: CORS Test
+        async function testCORS() {
+            log('Testing CORS configuration...');
+            setStatus('cors-status', 'Testing CORS...', 'loading');
+            
+            try {
+                // Test preflight request
+                const response = await fetch(`${API_BASE_URL}/posts`, {
+                    method: 'OPTIONS'
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials')
+                };
+                
+                setStatus('cors-status', '✅ CORS test completed', 'success');
+                setResponse('cors-details', corsHeaders);
+                log('CORS test completed');
+                
+            } catch (error) {
+                setStatus('cors-status', `❌ CORS test failed: ${error.message}`, 'error');
+                setResponse('cors-details', { error: error.message });
+                log(`CORS test failed: ${error.message}`);
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            log('Page loaded, running automatic tests...');
+            testEnvironment();
+            setTimeout(() => testDirectAPI(), 1000);
+            setTimeout(() => simulateUsePosts(), 2000);
+            setTimeout(() => testCORS(), 3000);
+        });
+
+        // Capture all console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            log('CONSOLE: ' + args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            log('ERROR: ' + args.join(' '));
+        };
+    </script>
+</body>
+</html>

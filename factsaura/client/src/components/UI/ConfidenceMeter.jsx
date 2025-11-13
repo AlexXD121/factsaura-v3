@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-function ConfidenceMeter({ 
-  confidence, 
-  size = 'md', 
+function ConfidenceMeter({
+  confidence,
+  size = 'md',
   showPercentage = true,
   showLabel = true,
   animated = true,
@@ -11,7 +11,7 @@ function ConfidenceMeter({
   className = ''
 }) {
   const [displayConfidence, setDisplayConfidence] = useState(0)
-  
+
   useEffect(() => {
     if (animated) {
       const timer = setTimeout(() => {
@@ -30,7 +30,7 @@ function ConfidenceMeter({
     lg: 'w-32 h-32',
     xl: 'w-40 h-40'
   }
-  
+
   const textSizes = {
     xs: 'text-xs',
     sm: 'text-xs',
@@ -53,16 +53,16 @@ function ConfidenceMeter({
       <div className={`w-full ${className}`}>
         {showLabel && (
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-white/80">Confidence</span>
+            <span className="text-sm text-secondary">Confidence</span>
             {showPercentage && (
-              <span className="text-sm font-semibold text-white">
+              <span className="text-sm font-semibold text-primary">
                 {Math.round(displayConfidence * 100)}%
               </span>
             )}
           </div>
         )}
-        
-        <div className="relative h-3 bg-white/10 rounded-full overflow-hidden">
+
+        <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full"
             style={{ backgroundColor: colorInfo.color }}
@@ -70,23 +70,23 @@ function ConfidenceMeter({
             animate={{ width: `${displayConfidence * 100}%` }}
             transition={{ duration: 1, ease: "easeOut" }}
           />
-          
+
           {/* Shimmer effect */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent"
             initial={{ x: '-100%' }}
             animate={{ x: '100%' }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity, 
+            transition={{
+              duration: 2,
+              repeat: Infinity,
               ease: "easeInOut",
-              delay: 1 
+              delay: 1
             }}
           />
         </div>
-        
+
         {showLabel && (
-          <div className="mt-2 text-xs text-white/60">
+          <div className="mt-2 text-xs text-secondary">
             {colorInfo.name}
           </div>
         )}
@@ -111,11 +111,11 @@ function ConfidenceMeter({
             cx="50%"
             cy="50%"
             r={radius}
-            stroke="rgba(255, 255, 255, 0.1)"
+            stroke="rgba(0, 0, 0, 0.1)"
             strokeWidth={strokeWidth}
             fill="transparent"
           />
-          
+
           {/* Progress circle */}
           <motion.circle
             cx="50%"
@@ -134,7 +134,7 @@ function ConfidenceMeter({
             }}
           />
         </svg>
-        
+
         {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {showPercentage && (
@@ -142,25 +142,25 @@ function ConfidenceMeter({
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, duration: 0.3 }}
-              className={`font-bold text-white ${textSizes[size]}`}
+              className={`font-bold text-primary ${textSizes[size]}`}
             >
               {Math.round(displayConfidence * 100)}%
             </motion.span>
           )}
-          
+
           {showLabel && size !== 'xs' && size !== 'sm' && (
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.3 }}
-              className="text-xs text-white/60 text-center leading-tight"
+              className="text-xs text-secondary text-center leading-tight"
             >
               Confidence
             </motion.span>
           )}
         </div>
       </div>
-      
+
       {/* Label below for smaller sizes */}
       {showLabel && (size === 'xs' || size === 'sm') && (
         <motion.div
@@ -169,7 +169,7 @@ function ConfidenceMeter({
           transition={{ delay: 1, duration: 0.3 }}
           className="mt-2 text-center"
         >
-          <div className="text-xs text-white/60">Confidence</div>
+          <div className="text-xs text-secondary">Confidence</div>
           <div className={`text-xs font-medium ${colorInfo.bg} px-2 py-1 rounded-full mt-1`}>
             {colorInfo.name}
           </div>

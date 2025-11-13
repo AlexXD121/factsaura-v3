@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Connectivity Test</title>
+</head>
+<body>
+    <h1>FactSaura API Connectivity Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:3001/api';
+        
+        async function testAPI() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing API connectivity...</p>';
+            
+            try {
+                // Test 1: Health check
+                console.log('Testing health endpoint...');
+                const healthResponse = await fetch('http://localhost:3001/health');
+                const healthData = await healthResponse.json();
+                results.innerHTML += `<p>✅ Health check: ${JSON.stringify(healthData)}</p>`;
+                
+                // Test 2: Posts API
+                console.log('Testing posts API...');
+                const postsResponse = await fetch(`${API_BASE_URL}/posts?limit=5`);
+                const postsData = await postsResponse.json();
+                results.innerHTML += `<p>✅ Posts API: Found ${postsData.data?.posts?.length || 0} posts</p>`;
+                
+                // Test 3: Create post
+                console.log('Testing create post...');
+                const createResponse = await fetch(`${API_BASE_URL}/posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: 'API Test Post',
+                        content: 'This is a test post to verify API connectivity',
+                        type: 'user_submitted'
+                    })
+                });
+                const createData = await createResponse.json();
+                results.innerHTML += `<p>✅ Create post: ${createResponse.status} - ${createData.success ? 'Success' : 'Failed'}</p>`;
+                
+                results.innerHTML += '<p><strong>🎉 All API tests completed successfully!</strong></p>';
+                
+            } catch (error) {
+                console.error('API test failed:', error);
+                results.innerHTML += `<p>❌ API test failed: ${error.message}</p>`;
+                results.innerHTML += '<p>💡 Make sure the backend server is running on port 3001</p>';
+            }
+        }
+        
+        // Run test when page loads
+        testAPI();
+    </script>
+</body>
+</html>

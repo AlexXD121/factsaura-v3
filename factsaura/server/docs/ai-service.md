@@ -119,21 +119,26 @@ Generates detailed confidence breakdown from analysis result.
 - Structured error responses for consistent handling
 
 ## Testing
-Run tests with: `npm test aiService.test.js`
-Test connection with: `node test-jan-ai-connection.js`
+- **Model Configuration**: `node test-model-config.js` (recommended first test)
+- **Service Tests**: `npm test aiService.test.js`
+- **Connection Test**: `node test-jan-ai-connection.js`
+- **Basic Analysis**: `node test-basic-analysis.js`
 
 ## Jan AI Setup
 1. Install and start Jan AI application
-2. Load the Meta-Llama-3_1-8B-Instruct-IQ4_XS model (or compatible)
+2. **REQUIRED**: Download and load the Meta-Llama-3_1-8B-Instruct-IQ4_XS model
+   - Go to Hub in Jan AI
+   - Search for "Meta-Llama-3_1-8B-Instruct-IQ4_XS"
+   - Download and wait for completion (~4.6GB)
 3. Configure API server settings:
    - Host: 127.0.0.1
    - Port: 1337
    - API Key: factsaura-key
 4. Start the Local API Server in Jan AI settings
-5. Test connection using: `node test-jan-ai-connection.js`
+5. Test configuration using: `node test-model-config.js`
 
 ## Model Requirements
-- **Recommended**: Meta-Llama-3_1-8B-Instruct-IQ4_XS
-- **Alternative**: Any Llama 3.1 or compatible instruction-tuned model
+- **Required**: Meta-Llama-3_1-8B-Instruct-IQ4_XS
 - **Size**: ~4.6GB (IQ4_XS quantization for efficiency)
 - **Performance**: Optimized for fact-checking and analysis tasks
+- **Note**: This is the only supported model for FactSaura. Other models may not provide consistent results.
