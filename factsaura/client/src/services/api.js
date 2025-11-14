@@ -25,6 +25,9 @@ class APIError extends Error {
 async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  // Debug logging
+  console.log('🔗 API Request:', { url, endpoint, API_BASE_URL });
+  
   // Default options
   const defaultOptions = {
     headers: {
@@ -275,6 +278,22 @@ export const familyTreeAPI = {
 };
 
 /**
+ * Demo API Functions
+ */
+export const demoAPI = {
+  /**
+   * Create demo family tree
+   * @returns {Promise<Object>} Demo family tree data
+   */
+  async createDemoFamilyTree() {
+    return apiRequest('/demo/family-tree', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+  },
+};
+
+/**
  * Health Check API
  */
 export const healthAPI = {
@@ -359,6 +378,7 @@ export default {
   posts: postsAPI,
   ai: aiAPI,
   familyTree: familyTreeAPI,
+  demo: demoAPI,
   health: healthAPI,
   testConnectivity: testAPIConnectivity,
   createLoadingState,

@@ -15,6 +15,7 @@ const redditRoutes = require('./reddit');
 const gdeltRoutes = require('./gdelt');
 const serviceHealthRoutes = require('./serviceHealth');
 const contentScrapingRoutes = require('./contentScraping');
+const demoRoutes = require('./demo');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -30,6 +31,7 @@ router.use('/reddit', redditRoutes);
 router.use('/gdelt', gdeltRoutes);
 router.use('/health', serviceHealthRoutes);
 router.use('/content-scraping', contentScrapingRoutes);
+router.use('/demo', demoRoutes);
 
 // API info endpoint
 router.get('/', (req, res) => {
@@ -48,7 +50,8 @@ router.get('/', (req, res) => {
       reddit: '/api/reddit',
       gdelt: '/api/gdelt',
       health: '/api/health',
-      contentScraping: '/api/content-scraping'
+      contentScraping: '/api/content-scraping',
+      demo: '/api/demo'
     }
   });
 });

@@ -4,25 +4,65 @@ function LoadingSkeleton({
   variant = 'post', 
   count = 1,
   className = '',
-  animated = true
+  animated = true,
+  showRetry = false,
+  onRetry = null,
+  error = null
 }) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.15,
+        delayChildren: 0.1
       }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.3 }
+      scale: 1,
+      transition: { 
+        duration: 0.5,
+        ease: "easeOut"
+      }
     }
+  }
+
+  // Error state
+  if (error) {
+    const ErrorWrapper = animated ? motion.div : 'div'
+    const errorProps = animated ? { variants: itemVariants } : {}
+
+    return (
+      <ErrorWrapper {...errorProps}>
+        <div className={`glass-card p-6 alert-warning ${className}`}>
+          <div className="text-center">
+            <div className="text-4xl mb-3">⚠️</div>
+            <h3 className="text-lg font-semibold text-primary mb-2">
+              Failed to Load
+            </h3>
+            <p className="text-secondary text-sm mb-4">
+              {typeof error === 'string' ? error : error.message || 'Something went wrong'}
+            </p>
+            {showRetry && onRetry && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onRetry}
+                className="glass-button-outlined px-4 py-2 text-sm hover-lift"
+              >
+                🔄 Try Again
+              </motion.button>
+            )}
+          </div>
+        </div>
+      </ErrorWrapper>
+    )
   }
 
   const skeletons = Array.from({ length: count }, (_, index) => {

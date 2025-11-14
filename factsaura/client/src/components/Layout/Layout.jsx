@@ -13,6 +13,7 @@ function Layout({ children, className = '' }) {
         { name: 'Feed', href: '/', icon: '🏠', badge: alertCount > 0 ? alertCount : null },
         { name: 'Submit', href: '/submit', icon: '📝' },
         { name: 'Family Tree', href: '/family-tree', icon: '🧬' },
+        { name: 'Demo', href: '/demo', icon: '🎭' },
         { name: 'About', href: '/about', icon: 'ℹ️' },
         { name: 'About Us', href: '/about-us', icon: '👥' }
     ]

@@ -1,0 +1,203 @@
+/* Mobile Responsive Optimizations */
+
+/* Touch-friendly minimum sizes */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Improve touch responsiveness */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom breakpoints for better mobile experience */
+@media (max-width: 374px) {
+  .xs\:hidden {
+    display: none;
+  }
+  
+  .xs\:inline {
+    display: inline;
+  }
+  
+  .xs\:flex {
+    display: flex;
+  }
+  
+  .xs\:flex-row {
+    flex-direction: row;
+  }
+  
+  .xs\:flex-none {
+    flex: none;
+  }
+}
+
+/* Improve scrolling on mobile */
+.mobile-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Better focus states for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+/* Prevent zoom on input focus (iOS) */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"], 
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+/* Improve button touch targets */
+button, 
+.btn,
+[role="button"] {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* Better spacing for mobile */
+@media (max-width: 640px) {
+  .mobile-spacing {
+    padding: 1rem;
+  }
+  
+  .mobile-spacing-sm {
+    padding: 0.5rem;
+  }
+}
+
+/* Family tree mobile optimizations */
+.family-tree-mobile {
+  touch-action: pan-x pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.family-tree-mobile svg {
+  touch-action: none;
+}
+
+/* Improve glassmorphism on mobile */
+@media (max-width: 768px) {
+  .glass-card {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Better mobile navigation */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Improve mobile form inputs */
+@media (max-width: 768px) {
+  .mobile-input {
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+}
+
+/* Better mobile cards */
+@media (max-width: 640px) {
+  .mobile-card {
+    margin: 0 -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* Improve mobile animations */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe\:animate-none {
+    animation: none;
+  }
+  
+  .motion-safe\:transition-none {
+    transition: none;
+  }
+}
+
+/* Better mobile loading states */
+.mobile-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Improve mobile text readability */
+@media (max-width: 640px) {
+  .mobile-text-sm {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .mobile-text-base {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .mobile-text-lg {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+}
+
+/* Better mobile spacing */
+.mobile-space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+.mobile-space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Improve mobile grid layouts */
+@media (max-width: 640px) {
+  .mobile-grid-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

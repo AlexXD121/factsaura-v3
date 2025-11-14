@@ -17,8 +17,22 @@ const FamilyTreeVisualization = ({
   const [hoveredNode, setHoveredNode] = useState(null);
   const [viewBox, setViewBox] = useState({ x: 0, y: 0, width: 800, height: 600 });
   const [zoom, setZoom] = useState(1);
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
   const svgRef = useRef(null);
   const containerRef = useRef(null);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Process visualization data
   const { nodes, edges, levels, statistics } = useMemo(() => {
@@ -90,9 +104,104 @@ const FamilyTreeVisualization = ({
   };
 
   const handleNodeHover = (node, isHovering) => {
-    setHoveredNode(isHovering ? node : null);
-    onNodeHover?.(node, isHovering);
+    if (!isMobile) { // Disable hover on mobile
+      setHoveredNode(isHovering ? node : null);
+      onNodeHover?.(node, isHovering);
+    }
   };
+
+  // Touch and pan handlers for mobile
+  const handleTouchStart = (event) => {
+    if (event.touches.length === 1) {
+      setIsPanning(true);
+      setPanStart({
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY
+      });
+    }
+  };
+
+  const handleTouchMove = (event) => {
+    if (isPanning && event.touches.length === 1) {
+      event.preventDefault();
+      const deltaX = event.touches[0].clientX - panStart.x;
+      const deltaY = event.touches[0].clientY - panStart.y;
+      
+      setViewBox(prev => ({
+        ...prev,
+        x: prev.x - deltaX / zoom,
+        y: prev.y - deltaY / zoom
+      }));
+      
+      setPanStart({
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsPanning(false);
+  };
+
+  // Mouse handlers for desktop
+  const handleMouseDown = (event) => {
+    if (!isMobile && event.button === 0) {
+      setIsPanning(true);
+      setPanStart({
+        x: event.clientX,
+        y: event.clientY
+      });
+    }
+  };
+
+  const handleMouseMove = (event) => {
+    if (isPanning && !isMobile) {
+      event.preventDefault();
+      const deltaX = event.clientX - panStart.x;
+      const deltaY = event.clientY - panStart.y;
+      
+      setViewBox(prev => ({
+        ...prev,
+        x: prev.x - deltaX / zoom,
+        y: prev.y - deltaY / zoom
+      }));
+      
+      setPanStart({
+        x: event.clientX,
+        y: event.clientY
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
+
+  // Add event listeners
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (isMobile) {
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd);
+    } else {
+      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mouseup', handleMouseUp);
+      container.addEventListener('mouseleave', handleMouseUp);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchend', handleTouchEnd);
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mouseup', handleMouseUp);
+        container.removeEventListener('mouseleave', handleMouseUp);
+      }
+    };
+  }, [isPanning, panStart, zoom, isMobile]);
 
   // Get node color based on type and properties
   const getNodeColor = (node) => {
@@ -167,19 +276,23 @@ const FamilyTreeVisualization = ({
           <motion.circle
             cx={position.x}
             cy={position.y}
-            r={nodeSize}
+            r={isMobile ? Math.max(nodeSize, 15) : nodeSize} // Minimum size for touch
             fill={nodeColor}
             stroke={isSelected ? '#1D4ED8' : isHovered ? '#3B82F6' : '#FFFFFF'}
             strokeWidth={isSelected ? 4 : isHovered ? 3 : 2}
             opacity={0.9}
-            style={{ cursor: interactive ? 'pointer' : 'default' }}
+            style={{ 
+              cursor: interactive ? 'pointer' : 'default',
+              touchAction: 'manipulation' // Optimize for touch
+            }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 0.9 }}
-            whileHover={interactive ? { scale: 1.2 } : {}}
+            whileHover={interactive && !isMobile ? { scale: 1.2 } : {}}
+            whileTap={interactive ? { scale: 0.9 } : {}}
             transition={{ duration: 0.3, delay: index * 0.1 }}
             onClick={interactive ? (e) => handleNodeClick(node, e) : undefined}
-            onMouseEnter={interactive ? () => handleNodeHover(node, true) : undefined}
-            onMouseLeave={interactive ? () => handleNodeHover(node, false) : undefined}
+            onMouseEnter={interactive && !isMobile ? () => handleNodeHover(node, true) : undefined}
+            onMouseLeave={interactive && !isMobile ? () => handleNodeHover(node, false) : undefined}
           />
           
           {/* Node label */}
@@ -221,7 +334,19 @@ const FamilyTreeVisualization = ({
   // Zoom controls
   const handleZoomIn = () => setZoom(prev => Math.min(prev * 1.2, 3));
   const handleZoomOut = () => setZoom(prev => Math.max(prev / 1.2, 0.3));
-  const handleResetZoom = () => setZoom(1);
+  const handleResetZoom = () => {
+    setZoom(1);
+    setViewBox({ x: 0, y: 0, width: layoutData.dimensions.width, height: layoutData.dimensions.height });
+  };
+
+  // Pinch-to-zoom for mobile
+  const handleWheel = (event) => {
+    if (!isMobile) {
+      event.preventDefault();
+      const delta = event.deltaY > 0 ? 0.9 : 1.1;
+      setZoom(prev => Math.min(Math.max(prev * delta, 0.3), 3));
+    }
+  };
 
   if (!data || !nodes.length) {
     return (
@@ -238,51 +363,94 @@ const FamilyTreeVisualization = ({
       <GlassCard className="p-4">
         {/* Header with metrics */}
         {showMetrics && (
-          <div className="mb-4 flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-semibold text-primary">
-                Truth DNA Family Tree
-              </h3>
-              <div className="text-sm text-secondary">
-                {statistics.totalNodes} mutations • {statistics.maxDepth + 1} generations
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <div>
+                <h3 className="text-lg font-semibold text-primary">
+                  Truth DNA Family Tree
+                </h3>
+                <div className="text-sm text-secondary">
+                  {statistics.totalNodes || nodes.length} mutations • {(statistics.maxDepth || 0) + 1} generations
+                </div>
+              </div>
+              
+              {/* Zoom controls - Touch Friendly */}
+              <div className="flex gap-2">
+                <motion.button
+                  onClick={handleZoomOut}
+                  whileTap={{ scale: 0.95 }}
+                  className={`${isMobile ? 'min-h-[44px] min-w-[44px]' : 'px-3 py-1'} text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors touch-manipulation flex items-center justify-center`}
+                >
+                  <span className="text-lg">−</span>
+                </motion.button>
+                <motion.button
+                  onClick={handleResetZoom}
+                  whileTap={{ scale: 0.95 }}
+                  className={`${isMobile ? 'min-h-[44px] px-3' : 'px-3 py-1'} text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors touch-manipulation flex items-center justify-center`}
+                >
+                  <span className="text-xs font-medium">{Math.round(zoom * 100)}%</span>
+                </motion.button>
+                <motion.button
+                  onClick={handleZoomIn}
+                  whileTap={{ scale: 0.95 }}
+                  className={`${isMobile ? 'min-h-[44px] min-w-[44px]' : 'px-3 py-1'} text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors touch-manipulation flex items-center justify-center`}
+                >
+                  <span className="text-lg">+</span>
+                </motion.button>
               </div>
             </div>
-            
-            {/* Zoom controls */}
-            <div className="flex gap-2">
-              <button
-                onClick={handleZoomOut}
-                className="px-3 py-1 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                −
-              </button>
-              <button
-                onClick={handleResetZoom}
-                className="px-3 py-1 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                {Math.round(zoom * 100)}%
-              </button>
-              <button
-                onClick={handleZoomIn}
-                className="px-3 py-1 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-              >
-                +
-              </button>
-            </div>
+
+            {/* Tree Statistics */}
+            {statistics.mutationTypeDistribution && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs bg-white/5 rounded-lg p-3">
+                <div className="text-center">
+                  <div className="font-semibold text-primary">{nodes.length}</div>
+                  <div className="text-secondary">Total Nodes</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-primary">{(statistics.maxDepth || 0) + 1}</div>
+                  <div className="text-secondary">Generations</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-primary">{Object.keys(statistics.mutationTypeDistribution).length}</div>
+                  <div className="text-secondary">Mutation Types</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-primary">{edges.length}</div>
+                  <div className="text-secondary">Connections</div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* SVG Tree Visualization */}
+        {/* SVG Tree Visualization - Mobile Optimized */}
         <div 
           ref={containerRef}
-          className="w-full h-96 overflow-auto border border-white/20 rounded-lg bg-white/5"
+          className={`w-full ${isMobile ? 'h-80' : 'h-96'} overflow-hidden border border-white/20 rounded-lg bg-white/5 relative ${
+            isPanning ? 'cursor-grabbing' : 'cursor-grab'
+          }`}
+          onTouchStart={handleTouchStart}
+          onMouseDown={handleMouseDown}
+          onWheel={handleWheel}
         >
+          {/* Mobile Instructions */}
+          {isMobile && (
+            <div className="absolute top-2 left-2 z-10 bg-black/70 text-white text-xs px-2 py-1 rounded">
+              Tap nodes • Pinch to zoom • Drag to pan
+            </div>
+          )}
+          
           <svg
             ref={svgRef}
             width="100%"
             height="100%"
             viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
-            style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }}
+            style={{ 
+              transform: `scale(${zoom})`, 
+              transformOrigin: 'center',
+              touchAction: 'none' // Prevent default touch behaviors
+            }}
             className="w-full h-full"
           >
             {/* Background grid */}
@@ -316,27 +484,42 @@ const FamilyTreeVisualization = ({
           </svg>
         </div>
 
-        {/* Legend */}
-        <div className="mt-4 flex flex-wrap gap-4 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <span>Original</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-            <span>Word Change</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span>Addition</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-            <span>Context Shift</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-            <span>Number Change</span>
+        {/* Mutation Type Legend */}
+        <div className="mt-4">
+          <h4 className="text-sm font-medium text-primary mb-2">Mutation Types</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-600"></div>
+              <span>Original</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+              <span>Word Substitution</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <span>Phrase Addition</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-lime-500"></div>
+              <span>Context Shift</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <span>Emotional Amplification</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-pink-500"></div>
+              <span>Source Modification</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+              <span>Numerical Change</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+              <span>Location Change</span>
+            </div>
           </div>
         </div>
       </GlassCard>

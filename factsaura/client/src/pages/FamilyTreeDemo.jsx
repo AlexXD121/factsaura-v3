@@ -1,90 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FamilyTree } from '../components/FamilyTree';
-import { GlassCard, AnimatedButton } from '../components/UI';
+import ModernFamilyTree from '../components/FamilyTree/ModernFamilyTree';
+import { GlassCard, AnimatedButton, SmartLoadingSkeleton } from '../components/UI';
+import { demoAPI } from '../services/api';
 
 const FamilyTreeDemo = () => {
   const [availableTrees, setAvailableTrees] = useState([]);
   const [selectedFamilyId, setSelectedFamilyId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [demoData, setDemoData] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Create demo family tree data
-  const createDemoTree = async () => {
+  // Load demo family tree using the demo API
+  const loadDemoTree = async () => {
     try {
       setLoading(true);
-      
-      // Create a demo family tree with original misinformation
-      const originalContent = "Turmeric can cure COVID-19 completely within 24 hours";
-      
-      const response = await fetch('/api/family-tree', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: originalContent,
-          metadata: {
-            source: 'Demo',
-            category: 'medical_misinformation',
-            severity: 'high'
-          }
-        })
-      });
+      setError(null);
 
-      if (response.ok) {
-        const result = await response.json();
+      // Use the demo API to create the full family tree with 47 mutations
+      const result = await demoAPI.createDemoFamilyTree();
+
+      if (result.success) {
         const familyId = result.data.familyId;
-        const rootNodeId = result.data.rootNodeId;
-
-        // Add some demo mutations
-        const mutations = [
-          {
-            content: "Turmeric and ginger can cure COVID-19 completely within 24 hours",
-            mutationData: {
-              mutationType: 'phrase_addition',
-              confidence: 0.85,
-              similarityScore: 0.92
-            }
-          },
-          {
-            content: "Turmeric can cure COVID-19 completely within 12 hours",
-            mutationData: {
-              mutationType: 'numerical_change',
-              confidence: 0.78,
-              similarityScore: 0.95
-            }
-          },
-          {
-            content: "Turmeric can cure coronavirus completely within 24 hours",
-            mutationData: {
-              mutationType: 'word_substitution',
-              confidence: 0.82,
-              similarityScore: 0.88
-            }
-          }
-        ];
-
-        // Add mutations to the tree
-        for (const mutation of mutations) {
-          await fetch(`/api/family-tree/${familyId}/mutations`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              parentNodeId: rootNodeId,
-              content: mutation.content,
-              mutationData: mutation.mutationData
-            })
-          });
-        }
+        const totalNodes = result.data.totalNodes;
 
         setSelectedFamilyId(familyId);
-        setAvailableTrees([{ familyId, name: 'Turmeric COVID Cure Demo' }]);
+        setAvailableTrees([{
+          familyId,
+          name: `Turmeric COVID Cure Demo (${totalNodes} nodes, ${result.data.maxDepth} generations)`
+        }]);
+
+        console.log('✅ Demo family tree loaded:', result.data);
+      } else {
+        throw new Error(result.error || 'Failed to create demo tree');
       }
     } catch (error) {
-      console.error('Error creating demo tree:', error);
+      console.error('Error loading demo tree:', error);
+      setError(`Failed to load demo: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -92,7 +43,7 @@ const FamilyTreeDemo = () => {
 
   // Load demo on component mount
   useEffect(() => {
-    createDemoTree();
+    loadDemoTree();
   }, []);
 
   // Handle node selection
@@ -130,38 +81,51 @@ const FamilyTreeDemo = () => {
               <div>
                 <h3 className="font-semibold text-primary mb-1">Demo Family Tree</h3>
                 <p className="text-sm text-secondary">
-                  Explore how the "Turmeric COVID cure" misinformation mutates
+                  Explore how the "Turmeric COVID cure" misinformation mutates across 47 variations
                 </p>
+                {availableTrees.length > 0 && (
+                  <p className="text-xs text-info mt-1">
+                    {availableTrees[0].name}
+                  </p>
+                )}
               </div>
               <div className="flex gap-3">
                 <AnimatedButton
-                  onClick={createDemoTree}
+                  onClick={loadDemoTree}
                   disabled={loading}
                   variant="primary"
                 >
-                  {loading ? 'Creating...' : 'Create New Demo'}
+                  {loading ? 'Loading...' : 'Create New Demo'}
                 </AnimatedButton>
               </div>
             </div>
+
+            {/* Error Display */}
+            {error && (
+              <div className="mt-4 p-3 bg-red-100 border border-red-200 rounded-lg">
+                <div className="text-red-800 text-sm">
+                  <strong>Error:</strong> {error}
+                </div>
+              </div>
+            )}
           </GlassCard>
         </motion.div>
 
         {/* Family Tree Visualization */}
-        {selectedFamilyId && (
+        {loading ? (
+          <SmartLoadingSkeleton variant="card" count={3} />
+        ) : selectedFamilyId ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <FamilyTree
+            <ModernFamilyTree
               familyId={selectedFamilyId}
-              onNodeSelect={handleNodeSelect}
-              showControls={true}
-              autoRefresh={false}
-              className="mb-8"
+              data={null} // Will use demo data
             />
           </motion.div>
-        )}
+        ) : null}
 
         {/* Feature Highlights */}
         <motion.div

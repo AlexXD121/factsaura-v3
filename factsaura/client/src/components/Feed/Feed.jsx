@@ -1,7 +1,13 @@
 import { motion } from 'framer-motion';
 import { usePosts } from '../../hooks/usePosts';
-import { GlassCard, AnimatedButton, LoadingSkeleton } from '../UI';
-import PostCard from './PostCard';
+import { GlassCard, AnimatedButton, LoadingSkeleton, ConnectionStatus } from '../UI';
+import { ErrorBoundary } from '../ErrorBoundary';
+import { ComponentTransition, StaggeredList } from '../Layout/PageTransition';
+import ModernPostCard from './ModernPostCard';
+import SmartLoadingSkeleton from '../UI/SmartLoadingSkeleton';
+import RealTimeIndicator from '../UI/RealTimeIndicator';
+import SmartFilters from '../UI/SmartFilters';
+import ModernCard from '../UI/ModernCard';
 
 function Feed() {
   const {
@@ -112,12 +118,18 @@ function Feed() {
   };
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-6"
-    >
+    <ErrorBoundary level="component">
+      <ComponentTransition>
+        <div className="space-y-6">
+          {/* Connection Status */}
+          <ConnectionStatus className="mb-4" />
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-6"
+          >
       {/* 🔍 DEBUG SECTION - Remove this after fixing */}
       <div style={{ 
         backgroundColor: '#f8f9fa', 
@@ -143,92 +155,53 @@ function Feed() {
 
       {/* Header */}
       <motion.div variants={itemVariants}>
-        <div className="glass-card content-box p-8">
+        <ModernCard className="p-8" variant="gradient">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-primary mb-4">Community Feed</h1>
-            <p className="text-secondary text-lg">
+            <motion.h1 
+              className="text-5xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Community Feed
+            </motion.h1>
+            <motion.p 
+              className="text-gray-600 text-xl font-medium"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
               AI-powered misinformation detection with transparent analysis
-            </p>
+            </motion.p>
+            
+            {/* Real-time Status */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 flex justify-center"
+            >
+              <RealTimeIndicator 
+                isActive={!error}
+                updateInterval={30000}
+                lastUpdate={lastUpdated}
+              />
+            </motion.div>
           </div>
-        </div>
+        </ModernCard>
       </motion.div>
 
-      {/* Filters and Controls */}
+      {/* Smart Filters */}
       <motion.div variants={itemVariants}>
-        <div className="glass-card p-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            {/* Filter Controls */}
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-primary text-sm font-medium">Filter by:</span>
-              
-              {/* Crisis Level Filter */}
-              <select 
-                onChange={(e) => handleFilterChange('urgency_level', e.target.value || undefined)}
-                className="glass-input text-sm py-2 px-3"
-              >
-                <option value="">All Levels</option>
-                <option value="critical">🔴 Critical</option>
-                <option value="high">🟡 High</option>
-                <option value="medium">🔵 Medium</option>
-                <option value="low">🟢 Low</option>
-              </select>
-
-              {/* Misinformation Filter */}
-              <select 
-                onChange={(e) => handleFilterChange('is_misinformation', e.target.value === '' ? undefined : e.target.value === 'true')}
-                className="glass-input text-sm py-2 px-3"
-              >
-                <option value="">All Posts</option>
-                <option value="true">⚠️ Misinformation</option>
-                <option value="false">✅ Verified</option>
-              </select>
-            </div>
-
-            {/* Sort Controls */}
-            <div className="flex items-center gap-3">
-              <span className="text-primary text-sm font-medium">Sort by:</span>
-              <select 
-                onChange={(e) => {
-                  const [sortBy, sortOrder] = e.target.value.split(':');
-                  handleSortChange(sortBy, sortOrder);
-                }}
-                className="glass-input text-sm py-2 px-3"
-              >
-                <option value="created_at:desc">Latest First</option>
-                <option value="created_at:asc">Oldest First</option>
-                <option value="upvotes:desc">Most Upvoted</option>
-                <option value="confidence_score:desc">Highest Confidence</option>
-                <option value="urgency_level:desc">Most Critical</option>
-              </select>
-
-              {/* Refresh Button */}
-              <AnimatedButton 
-                variant="outline" 
-                size="sm" 
-                onClick={refresh}
-                disabled={refreshing}
-                className="glass-button-outlined"
-              >
-                {refreshing ? '🔄' : '↻'} Refresh
-              </AnimatedButton>
-              
-              {/* Real-time indicator */}
-              <div className="flex items-center text-xs text-secondary">
-                {refreshing ? (
-                  <>
-                    <div className="animate-pulse w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    Updating...
-                  </>
-                ) : (
-                  <>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
-                    Live (30s)
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        <SmartFilters
+          onFilterChange={handleFilterChange}
+          onSortChange={handleSortChange}
+          activeFilters={{
+            urgency_level: undefined,
+            is_misinformation: undefined,
+            harm_category: undefined
+          }}
+        />
       </motion.div>
 
       {/* Error State */}
@@ -315,9 +288,11 @@ function Feed() {
       {/* Loading State */}
       {loading && !refreshing && (
         <motion.div variants={itemVariants}>
-          <div className="space-y-6">
-            <LoadingSkeleton variant="post" count={3} />
-          </div>
+          <SmartLoadingSkeleton 
+            variant="post" 
+            count={3} 
+            animated={true}
+          />
         </motion.div>
       )}
 
@@ -341,84 +316,46 @@ function Feed() {
 
       {/* Posts List */}
       {posts && posts.length > 0 && (
-        <div className="space-y-6" style={{ backgroundColor: '#e8f5e8', padding: '16px', borderRadius: '8px', border: '2px solid #28a745' }}>
-          {/* 🔍 DEBUG: Posts rendering indicator */}
-          <div style={{ 
-            backgroundColor: '#d4edda', 
-            border: '1px solid #c3e6cb', 
-            borderRadius: '4px',
-            padding: '8px',
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: '#155724'
-          }}>
-            📊 Rendering {posts.length} posts in the list
-          </div>
-
-          {/* Show loading overlay when refreshing */}
-          {refreshing && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="glass-card p-4 mb-6"
-              style={{ backgroundColor: '#fff3cd', border: '1px solid #ffeaa7' }}
-            >
-              <div className="flex items-center justify-center space-x-3 text-primary" style={{ color: '#856404' }}>
-                <div className="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full"></div>
-                <span className="text-sm font-medium">Updating posts...</span>
-              </div>
-            </motion.div>
-          )}
-          
-          {posts.map((post, index) => {
-            console.log(`🎨 Rendering post ${index + 1}/${posts.length}:`, post);
-            
-            return (
+        <ErrorBoundary level="component">
+          <StaggeredList className="space-y-6" staggerDelay={0.1}>
+            {/* Show loading overlay when refreshing */}
+            {refreshing && (
               <motion.div 
-                key={post.id} 
-                variants={itemVariants}
-                custom={index}
-                style={{ 
-                  backgroundColor: '#ffffff', 
-                  border: '2px solid #007bff', 
-                  borderRadius: '8px',
-                  padding: '16px',
-                  marginBottom: '16px'
-                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="glass-card p-4 mb-6 animate-morph-glass"
               >
-                {/* 🔍 DEBUG: Simple post preview */}
-                <div style={{ 
-                  backgroundColor: '#f8f9fa', 
-                  padding: '8px', 
-                  marginBottom: '8px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontFamily: 'monospace',
-                  color: '#6c757d'
-                }}>
-                  Post #{index + 1}: {post.id} | {post.title?.substring(0, 30)}...
+                <div className="flex items-center justify-center space-x-3 text-primary">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full"
+                  />
+                  <span className="text-sm font-medium">Updating posts...</span>
                 </div>
-
-                <PostCard
+              </motion.div>
+            )}
+            
+            {posts.map((post, index) => (
+              <ErrorBoundary key={post.id} level="component">
+                <ModernPostCard
                   post={post}
                   onVote={handleVote}
                   onAskAI={handleAskAI}
                   onShare={handleShare}
                   onReport={handleReport}
                 />
-              </motion.div>
-            );
-          })}
-        </div>
+              </ErrorBoundary>
+            ))}
+          </StaggeredList>
+        </ErrorBoundary>
       )}
 
       {/* Load More Button */}
       {hasMore && posts.length > 0 && (
         <motion.div variants={itemVariants} className="text-center">
           {refreshing ? (
-            <div className="space-y-6">
-              <LoadingSkeleton variant="post" count={2} />
-            </div>
+            <SmartLoadingSkeleton variant="post" count={2} />
           ) : (
             <div className="space-y-4">
               {/* Pagination Error */}
@@ -486,7 +423,10 @@ function Feed() {
           </div>
         </motion.div>
       )}
-    </motion.div>
+        </motion.div>
+      </div>
+    </ComponentTransition>
+  </ErrorBoundary>
   );
 }
 

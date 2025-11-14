@@ -1,10 +1,10 @@
 // Family Tree Controller
 // Handles HTTP requests for misinformation genealogy operations
-const MisinformationFamilyTreeService = require('../services/misinformationFamilyTreeService');
+const serviceRegistry = require('../services/serviceRegistry');
 
 class FamilyTreeController {
   constructor() {
-    this.familyTreeService = new MisinformationFamilyTreeService();
+    this.familyTreeService = serviceRegistry.getFamilyTreeService();
   }
 
   /**

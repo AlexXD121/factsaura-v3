@@ -37,7 +37,10 @@ const {
   getDeduplicationConfig,
   analyzeContentForDuplicates,
   deduplicateContent,
-  clearDeduplicationCaches
+  clearDeduplicationCaches,
+  // Auto-posting endpoints
+  getAutoPostingStats,
+  updateAutoPostingConfig
 } = require('../controllers/contentScrapingController');
 
 /**
@@ -232,5 +235,20 @@ router.post('/deduplication/deduplicate', deduplicateContent);
  * @desc Clear deduplication caches
  */
 router.delete('/deduplication/cache', clearDeduplicationCaches);
+
+// Auto-Posting Routes
+
+/**
+ * @route GET /api/content-scraping/auto-posting/stats
+ * @desc Get auto-posting service statistics
+ */
+router.get('/auto-posting/stats', getAutoPostingStats);
+
+/**
+ * @route PUT /api/content-scraping/auto-posting/config
+ * @desc Update auto-posting configuration
+ * @body { confidenceThreshold?: number, isEnabled?: boolean, maxPostsPerHour?: number }
+ */
+router.put('/auto-posting/config', updateAutoPostingConfig);
 
 module.exports = router;

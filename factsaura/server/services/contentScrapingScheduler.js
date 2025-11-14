@@ -10,6 +10,7 @@ const GdeltApiService = require('./gdeltApiService');
 const TrendingTopicDetectionService = require('./trendingTopicDetectionService');
 const KeywordFilterService = require('./keywordFilterService');
 const ContentDeduplicationService = require('./contentDeduplicationService');
+const AutoPostingService = require('./autoPostingService');
 const { apiKeyManager } = require('../config/apiKeys');
 
 class ContentScrapingScheduler {
@@ -21,6 +22,7 @@ class ContentScrapingScheduler {
     this.trendingDetectionService = new TrendingTopicDetectionService();
     this.keywordFilterService = new KeywordFilterService();
     this.deduplicationService = new ContentDeduplicationService();
+    this.autoPostingService = new AutoPostingService();
     
     // Scheduler configuration
     this.isRunning = false;
@@ -134,10 +136,15 @@ class ContentScrapingScheduler {
       const basicAnalysis = await this.analyzeScrapedContent();
       const trendingAnalysis = await this.trendingDetectionService.detectTrendingTopics(this.latestContent);
       
+      // 🤖 AUTO-POSTING: Process content for automatic misinformation alerts
+      console.log('🤖 Running auto-posting analysis...');
+      const autoPostingResult = await this.autoPostingService.processScrapedContent(this.latestContent);
+      
       // Combine analyses
       const analysis = {
         ...basicAnalysis,
-        trending: trendingAnalysis
+        trending: trendingAnalysis,
+        autoPosting: autoPostingResult
       };
 
       // Log cycle completion
@@ -147,6 +154,7 @@ class ContentScrapingScheduler {
       console.log(`✅ Scraping cycle #${this.runCount} completed in ${duration}ms`);
       console.log(`📊 Content summary: ${analysis.totalItems} items, ${analysis.crisisItems} crisis alerts, ${analysis.trendingItems} trending`);
       console.log(`🔥 Trending analysis: ${analysis.trending?.summary?.trendingCount || 0} trending topics, ${analysis.trending?.summary?.viralCount || 0} viral topics`);
+      console.log(`🤖 Auto-posting: ${analysis.autoPosting?.postsCreated || 0} misinformation alerts created`);
 
       return {
         success: true,
@@ -706,6 +714,22 @@ class ContentScrapingScheduler {
    */
   clearDeduplicationCaches() {
     this.deduplicationService.clearCaches();
+  }
+
+  /**
+   * Get auto-posting service statistics
+   * @returns {Object} Auto-posting statistics
+   */
+  getAutoPostingStats() {
+    return this.autoPostingService.getStats();
+  }
+
+  /**
+   * Update auto-posting configuration
+   * @param {Object} config - New auto-posting configuration
+   */
+  updateAutoPostingConfig(config) {
+    this.autoPostingService.updateConfig(config);
   }
 
   /**

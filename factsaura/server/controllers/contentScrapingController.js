@@ -820,6 +820,53 @@ const clearDeduplicationCaches = async (req, res) => {
 };
 
 /**
+ * Get auto-posting service statistics
+ */
+const getAutoPostingStats = async (req, res) => {
+  try {
+    const scheduler = getSchedulerInstance();
+    const stats = scheduler.getAutoPostingStats();
+
+    res.json({
+      success: true,
+      autoPostingStats: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error getting auto-posting stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get auto-posting statistics',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Update auto-posting configuration
+ */
+const updateAutoPostingConfig = async (req, res) => {
+  try {
+    const config = req.body;
+    const scheduler = getSchedulerInstance();
+    scheduler.updateAutoPostingConfig(config);
+
+    res.json({
+      success: true,
+      message: 'Auto-posting configuration updated successfully',
+      updatedConfig: config
+    });
+  } catch (error) {
+    console.error('Error updating auto-posting config:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update auto-posting configuration',
+      error: error.message
+    });
+  }
+};
+
+/**
  * Initialize scheduler on server startup (if configured)
  */
 const initializeScheduler = () => {
@@ -872,6 +919,9 @@ module.exports = {
   analyzeContentForDuplicates,
   deduplicateContent,
   clearDeduplicationCaches,
+  // Auto-posting endpoints
+  getAutoPostingStats,
+  updateAutoPostingConfig,
   initializeScheduler,
   getSchedulerInstance // Export for testing
 };

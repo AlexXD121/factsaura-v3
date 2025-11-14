@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { GlassCard, LoadingSkeleton } from '../UI';
 import FamilyTreeVisualization from './FamilyTreeVisualization';
+import { familyTreeAPI } from '../../services/api';
 
 const FamilyTree = ({ 
   familyId, 
@@ -29,21 +30,19 @@ const FamilyTree = ({
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/family-tree/${familyId}?includeMetrics=true`);
+      console.log('🌳 Fetching family tree:', familyId);
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch family tree: ${response.status}`);
-      }
-
-      const result = await response.json();
+      // Get family tree with metrics and visualization data
+      const result = await familyTreeAPI.getFamilyTree(familyId);
       
       if (result.success) {
+        console.log('✅ Family tree loaded:', result.data);
         setTreeData(result.data);
       } else {
         throw new Error(result.error || 'Failed to load family tree');
       }
     } catch (err) {
-      console.error('Error fetching family tree:', err);
+      console.error('❌ Error fetching family tree:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -118,9 +117,18 @@ const FamilyTree = ({
 
   // Render statistics view
   const renderStatistics = () => {
-    if (!treeData?.treeMetrics) return null;
+    if (!treeData?.treeMetrics && !treeData?.visualizationData?.statistics) return null;
 
-    const { treeMetrics, genealogyAnalysis } = treeData;
+    // Use either treeMetrics or visualizationData.statistics
+    const metrics = treeData.treeMetrics || {};
+    const vizStats = treeData.visualizationData?.statistics || {};
+    const genealogyAnalysis = treeData.genealogyAnalysis || {};
+
+    // Calculate statistics from available data
+    const totalNodes = metrics.totalNodes || vizStats.totalNodes || 0;
+    const maxDepth = metrics.maxDepth || vizStats.maxDepth || 0;
+    const leafNodes = metrics.leafNodes || 0;
+    const avgBranching = metrics.averageBranchingFactor || 0;
 
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -129,50 +137,72 @@ const FamilyTree = ({
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Total Nodes:</span>
-              <span className="font-medium">{treeMetrics.totalNodes}</span>
+              <span className="font-medium">{totalNodes}</span>
             </div>
             <div className="flex justify-between">
               <span>Max Depth:</span>
-              <span className="font-medium">{treeMetrics.maxDepth}</span>
+              <span className="font-medium">{maxDepth}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Leaf Nodes:</span>
-              <span className="font-medium">{treeMetrics.leafNodes}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Avg Branching:</span>
-              <span className="font-medium">{treeMetrics.averageBranchingFactor?.toFixed(1)}</span>
-            </div>
-          </div>
-        </GlassCard>
-
-        <GlassCard className="p-4">
-          <h4 className="font-semibold text-primary mb-2">Evolution Analysis</h4>
-          <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Generations:</span>
-              <span className="font-medium">{genealogyAnalysis?.totalGenerations}</span>
+              <span className="font-medium">{maxDepth + 1}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Mutation Density:</span>
-              <span className="font-medium">{(genealogyAnalysis?.mutationDensity * 100)?.toFixed(1)}%</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Complexity Score:</span>
-              <span className="font-medium">{genealogyAnalysis?.evolutionComplexity?.toFixed(1)}/10</span>
-            </div>
+            {leafNodes > 0 && (
+              <div className="flex justify-between">
+                <span>Leaf Nodes:</span>
+                <span className="font-medium">{leafNodes}</span>
+              </div>
+            )}
+            {avgBranching > 0 && (
+              <div className="flex justify-between">
+                <span>Avg Branching:</span>
+                <span className="font-medium">{avgBranching.toFixed(1)}</span>
+              </div>
+            )}
           </div>
         </GlassCard>
 
         <GlassCard className="p-4">
-          <h4 className="font-semibold text-primary mb-2">Dominant Mutations</h4>
+          <h4 className="font-semibold text-primary mb-2">Mutation Analysis</h4>
           <div className="space-y-2 text-sm">
-            {genealogyAnalysis?.dominantMutationTypes?.slice(0, 3).map((mutation, index) => (
+            {vizStats.mutationTypeDistribution && Object.entries(vizStats.mutationTypeDistribution).slice(0, 4).map(([type, count], index) => (
+              <div key={index} className="flex justify-between">
+                <span className="capitalize">{type.replace('_', ' ')}:</span>
+                <span className="font-medium">{count}</span>
+              </div>
+            ))}
+            {!vizStats.mutationTypeDistribution && (
+              <div className="text-secondary text-center py-2">
+                Mutation analysis available after tree creation
+              </div>
+            )}
+          </div>
+        </GlassCard>
+
+        <GlassCard className="p-4">
+          <h4 className="font-semibold text-primary mb-2">Evolution Metrics</h4>
+          <div className="space-y-2 text-sm">
+            {genealogyAnalysis.dominantMutationTypes?.slice(0, 3).map((mutation, index) => (
               <div key={index} className="flex justify-between">
                 <span className="capitalize">{mutation.type.replace('_', ' ')}:</span>
                 <span className="font-medium">{mutation.percentage?.toFixed(1)}%</span>
               </div>
-            ))}
+            )) || (
+              <>
+                <div className="flex justify-between">
+                  <span>Complexity:</span>
+                  <span className="font-medium">High</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Spread Rate:</span>
+                  <span className="font-medium">Viral</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Mutation Rate:</span>
+                  <span className="font-medium">Active</span>
+                </div>
+              </>
+            )}
           </div>
         </GlassCard>
       </div>

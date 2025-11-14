@@ -1,0 +1,1364 @@
+{
+  "timestamp": "2025-11-14T01:08:58.035Z",
+  "testResults": {
+    "backendHealth": true,
+    "apiEndpoints": true,
+    "contentSubmission": {
+      "success": true,
+      "message": "Post created successfully with AI analysis and mutation detection",
+      "data": {
+        "post": {
+          "id": "f0e448d4-ea82-4293-8a83-d1841cb2a9ce",
+          "title": "BREAKING: New COVID-19 Cure Discovered",
+          "content": "BREAKING: Scientists discover that drinking bleach can cure COVID-19! Share this to save lives! 🚨",
+          "type": "user_submitted",
+          "content_type": "text",
+          "source_url": null,
+          "author_id": "5c182750-fcde-4351-b673-ccd39277b391",
+          "crisis_context": {
+            "urgency_level": "low",
+            "location_relevance": "global",
+            "harm_category": "general",
+            "crisis_keywords": []
+          },
+          "ai_analysis": {
+            "confidence_score": 0.6,
+            "is_misinformation": true,
+            "explanation": "AI analysis unavailable (UNKNOWN_ERROR): No AI model available: ECONNREFUSED. Basic pattern analysis performed.",
+            "reasoning_steps": [
+              "AI service connection failed - performing basic analysis",
+              "Checked for 6 crisis keywords, found: 0",
+              "Checked for 7 suspicious patterns, found: 1",
+              "Flagging for manual expert review due to AI unavailability"
+            ],
+            "sources_checked": [],
+            "uncertainty_flags": [
+              "ai_analysis_failed",
+              "needs_human_review",
+              "basic_pattern_analysis_only",
+              "unknown_error"
+            ],
+            "analysis_timestamp": "2025-11-14T01:08:57.698+00:00"
+          },
+          "engagement": {
+            "upvotes": 0,
+            "downvotes": 0,
+            "comments_count": 0,
+            "expert_verifications": 0,
+            "community_trust_score": 0.5
+          },
+          "is_published": true,
+          "is_flagged": false,
+          "is_verified": false,
+          "created_at": "2025-11-14T01:08:59.367229+00:00",
+          "updated_at": "2025-11-14T01:08:59.367229+00:00"
+        },
+        "ai_analysis": {
+          "confidence_score": 0.6,
+          "is_misinformation": true,
+          "explanation": "AI analysis unavailable (UNKNOWN_ERROR): No AI model available: ECONNREFUSED. Basic pattern analysis performed.",
+          "reasoning_steps": [
+            "AI service connection failed - performing basic analysis",
+            "Checked for 6 crisis keywords, found: 0",
+            "Checked for 7 suspicious patterns, found: 1",
+            "Flagging for manual expert review due to AI unavailability"
+          ],
+          "crisis_context": {
+            "urgency_level": "low",
+            "harm_category": "general",
+            "crisis_keywords_found": [],
+            "potential_harm": "No immediate harm detected in basic analysis"
+          },
+          "processing_time_ms": 0,
+          "analysis_quality": 0.8999999999999999
+        },
+        "mutation_analysis": {
+          "is_mutation": false,
+          "family_id": "3ca54c10-1d45-4fce-8a44-f4807661be4a",
+          "confidence": 1,
+          "analysis": "New misinformation family created"
+        }
+      }
+    },
+    "feedRetrieval": {
+      "posts": [
+        {
+          "id": "f0e448d4-ea82-4293-8a83-d1841cb2a9ce",
+          "title": "BREAKING: New COVID-19 Cure Discovered",
+          "content": "BREAKING: Scientists discover that drinking bleach can cure COVID-19! Share this to save lives! 🚨",
+          "type": "user_submitted",
+          "content_type": "text",
+          "source_url": null,
+          "author_id": "5c182750-fcde-4351-b673-ccd39277b391",
+          "crisis_context": {
+            "urgency_level": "low",
+            "location_relevance": "global",
+            "harm_category": "general",
+            "crisis_keywords": []
+          },
+          "ai_analysis": {
+            "confidence_score": 0.6,
+            "is_misinformation": true,
+            "explanation": "AI analysis unavailable (UNKNOWN_ERROR): No AI model available: ECONNREFUSED. Basic pattern analysis performed.",
+            "reasoning_steps": [
+              "AI service connection failed - performing basic analysis",
+              "Checked for 6 crisis keywords, found: 0",
+              "Checked for 7 suspicious patterns, found: 1",
+              "Flagging for manual expert review due to AI unavailability"
+            ],
+            "sources_checked": [],
+            "uncertainty_flags": [
+              "ai_analysis_failed",
+              "needs_human_review",
+              "basic_pattern_analysis_only",
+              "unknown_error"
+            ],
+            "analysis_timestamp": "2025-11-14T01:08:57.698+00:00"
+          },
+          "engagement": {
+            "upvotes": 0,
+            "downvotes": 0,
+            "comments_count": 0,
+            "expert_verifications": 0,
+            "community_trust_score": 0.5
+          },
+          "is_published": true,
+          "is_flagged": false,
+          "is_verified": false,
+          "created_at": "2025-11-14T01:08:59.367229+00:00",
+          "updated_at": "2025-11-14T01:08:59.367229+00:00",
+          "author": {
+            "id": "5c182750-fcde-4351-b673-ccd39277b391",
+            "badges": [
+              "system_user"
+            ],
+            "username": "system",
+            "full_name": "FactSaura System",
+            "is_expert": true,
+            "avatar_url": null,
+            "is_verified": true,
+            "reputation_score": 1000
+          }
+        },
+        {
+          "id": "ddcf39e1-272a-4f0d-9da4-f6af3b123216",
+          "title": "BREAKING: New COVID-19 Cure Discovered",
+          "content": "BREAKING: Scientists discover that drinking bleach can cure COVID-19! Share this to save lives! 🚨",
+          "type": "user_submitted",
+          "content_type": "text",
+          "source_url": null,
+          "author_id": "5c182750-fcde-4351-b673-ccd39277b391",
+          "crisis_context": {
+            "urgency_level": "low",
+            "location_relevance": "global",
+            "harm_category": "general",
+            "crisis_keywords": []
+          },
+          "ai_analysis": {
+            "confidence_score": 0.6,
+            "is_misinformation": true,
+            "explanation": "AI analysis unavailable (UNKNOWN_ERROR): No AI model available: ECONNREFUSED. Basic pattern analysis performed.",
+            "reasoning_steps": [
+              "AI service connection failed - performing basic analysis",
+              "Checked for 6 crisis keywords, found: 0",
+              "Checked for 7 suspicious patterns, found: 1",
+              "Flagging for manual expert review due to AI unavailability"
+            ],
+            "sources_checked": [],
+            "uncertainty_flags": [
+              "ai_analysis_failed",
+              "needs_human_review",
+              "basic_pattern_analysis_only",
+              "unknown_error"
+            ],
+            "analysis_timestamp": "2025-11-14T01:01:35.752+00:00"
+          },
+          "engagement": {
+            "upvotes": 0,
+            "downvotes": 0,
+            "comments_count": 0,
+            "expert_verifications": 0,
+            "community_trust_score": 0.5
+          },
+          "is_published": true,
+          "is_flagged": false,
+          "is_verified": false,
+          "created_at": "2025-11-14T01:01:37.432294+00:00",
+          "updated_at": "2025-11-14T01:01:37.432294+00:00",
+          "author": {
+            "id": "5c182750-fcde-4351-b673-ccd39277b391",
+            "badges": [
+              "system_user"
+            ],
+            "username": "system",
+            "full_name": "FactSaura System",
+            "is_expert": true,
+            "avatar_url": null,
+            "is_verified": true,
+            "reputation_score": 1000
+          }
+        },
+        {
+          "id": "a7fd3a60-612c-499f-b7c3-6828ab574c85",
+          "title": "Drinking Bleach Kills Cancer Cells - Miracle Cure Discovered",
+          "content": "MIRACLE DISCOVERY: Drinking diluted bleach (MMS - Miracle Mineral Solution) kills all cancer cells within weeks. FDA and doctors don't want you to know this $2 cure because it would destroy their billion-dollar cancer industry. Thousands cured already! #MiracleMineral #CancerCure",
+          "type": "user_submitted",
+          "content_type": "text",
+          "source_url": null,
+          "author_id": "5c182750-fcde-4351-b673-ccd39277b391",
+          "crisis_context": {
+            "urgency_level": "critical",
+            "location_relevance": "global",
+            "harm_category": "medical",
+            "crisis_keywords": [
+              "bleach",
+              "cancer cure",
+              "MMS",
+              "Miracle Mineral Solution",
+              "FDA"
+            ]
+          },
+          "ai_analysis": {
+            "confidence_score": 0.99,
+            "is_misinformation": true,
+            "explanation": "This content shows extremely high confidence indicators, multiple crisis-related keywords, conspiracy theory patterns suggesting it contains misinformation that could cause harm.",
+            "reasoning_steps": [
+              "Extremely dangerous medical misinformation promoting toxic substance",
+              "Bleach consumption can cause severe poisoning and death",
+              "False conspiracy claims about medical establishment",
+              "Could lead to serious harm or death if followed"
+            ],
+            "sources_checked": [
+              {
+                "url": "WHO Fact Sheets",
+                "credibility": 0.5,
+                "status": "unchecked"
+              },
+              {
+                "url": "Peer-reviewed Medical Journals",
+                "credibility": 0.5,
+                "status": "unchecked"
+              },
+              {
+                "url": "Government Health Departments",
+                "credibility": 0.5,
+                "status": "unchecked"
+              }
+            ],
+            "uncertainty_flags": [
+              "Life-threatening medical advice",
+              "Promotes consumption of toxic substances"
+            ],
+            "analysis_timestamp": "2025-11-13T22:33:08.835+00:00"
+          },
+          "engagement": {
+            "upvotes": 52,
+            "downvotes": 21,
+            "comments_count": 1,
+            "expert_verifications": 0,
+            "community_trust_score": 0.264
+          },
+          "is_published": true,
+          "is_flagged": true,
+          "is_verified": false,
+          "created_at": "2025-11-13T22:33:08.835+00:00",
+          "updated_at": "2025-11-13T22:33:08.835+00:00",
+          "author": {
+            "id": "5c182750-fcde-4351-b673-ccd39277b391",
+            "badges": [
+              "system_user"
+            ],
+            "username": "system",
+            "full_name": "FactSaura System",
+            "is_expert": true,
+            "avatar_url": null,
+            "is_verified": true,
+            "reputation_score": 1000
+          }
+        },
+        {
+          "id": "39866745-6b6b-4b8c-b306-1d136b409eef",
+          "title": "🚨 SCAM ALERT: Fake Cryptocurrency Investment Scheme Detected",
+          "content": "⚠️ FINANCIAL SCAM DETECTED ⚠️\n\nViral scheme: 'Invest ₹10,000 in DelhiCoin, get ₹1 lakh in 30 days'\n\nAnalysis: Classic Ponzi scheme using fake cryptocurrency. No legitimate blockchain, no regulatory approval. Victims report losing entire investments.\n\nConfidence: 98% fraudulent scheme\n\nSources: Reserve Bank of India, Securities and Exchange Board of India\n\n#CryptoScam #FinancialFraud",
+          "type": "ai_detected",
+          "content_type": "text",
+          "source_url": null,
+          "author_id": "5c182750-fcde-4351-b673-ccd39277b391",
+          "crisis_context": {
+            "urgency_level": "critical",
+            "location_relevance": "delhi",
+            "harm_category": "financial",
+            "crisis_keywords": [
+              "cryptocurrency",
+              "investment",
+              "scam",
+              "Ponzi scheme",
+              "DelhiCoin"
+            ]
+          },
+          "ai_analysis": {
+            "confidence_score": 0.98,
+            "is_misinformation": false,
+            "explanation": "This is an AI-generated warning post about detected misinformation. The original false claim has been analyzed and flagged to prevent harm.",
+            "reasoning_steps": [
+              "AI-generated warning about financial fraud",
+              "Identifies classic Ponzi scheme characteristics",
+              "Cites regulatory authorities for credibility",
+              "Protects potential victims from financial loss"
+            ],
+            "sources_checked": [
+              {
+                "url": "Financial Regulatory Bodies",
+                "credibility": 0.5,
+                "status": "unchecked"
+              },
+              {
+                "url": "Central Bank Announcements",
+                "credibility": 0.5,
+                "status": "unchecked"
+              },
+              {
+                "url": "Google Fact Check Tools",
+                "credibility": 0.5,
+                "status": "unchecked"
+              }
+            ],
+            "uncertainty_flags": [],
+            "analysis_timestamp": "2025-11-13T20:33:08.835+00:00"
+          },
+          "engagement": {
+            "upvotes": 31,
+            "downvotes": 7,
+            "comments_count": 5,
+            "expert_verifications": 1,
+            "community_trust_score": 0.858
+          },
+          "is_published": true,
+          "is_flagged": false,
+          "is_verified": true,
+          "created_at": "2025-11-13T20:33:08.835+00:00",
+          "updated_at": "2025-11-13T20:33:08.835+00:00",
+          "author": {
+            "id": "5c182750-fcde-4351-b673-ccd39277b391",
+            "badges": [
+              "system_user"
+            ],
+            "username": "system",
+            "full_name": "FactSaura System",
+            "is_expert": true,
+            "avatar_url": null,
+            "is_verified": true,
+            "reputation_score": 1000
+          }
+        },
+        {
+          "id": "2e3fe611-282a-44c0-be55-1843368aa5a8",
+          "title": "Increased Traffic Accidents Near New Highway Construction",
+          "content": "There have been 3 accidents this week near the new highway construction site on NH-8. The temporary traffic signals might be confusing drivers. Local residents are concerned about safety. Has anyone else noticed this pattern?",
+          "type": "user_submitted",
+          "content_type": "text",
+          "source_url": null,
+          "author_id": "5c182750-fcde-4351-b673-ccd39277b391",
+          "crisis_context": {
+            "urgency_level": "medium",
+            "location_relevance": "global",
+            "harm_category": "general",
+            "crisis_keywords": [
+              "accidents",
+              "highway construction",
+              "traffic signals",
+              "NH-8"
+            ]
+          },
+          "ai_analysis": {
+            "confidence_score": 0.15,
+            "is_misinformation": false,
+            "explanation": "This content appears to be legitimate information or a reasonable concern without clear misinformation indicators.",
+            "reasoning_steps": [
+              "Legitimate safety concern about traffic patterns",
+              "Observational report without false claims",
+              "Seeks community input rather than making definitive statements",
+              "Could be valuable information for traffic authorities"
+            ],
+            "sources_checked": [
+              {
+                "url": "Google Fact Check Tools",
+                "credibility": 0.5,
+                "status": "unchecked"
+              }
+            ],
+            "uncertainty_flags": [],
+            "analysis_timestamp": "2025-11-13T18:33:08.835+00:00"
+          },
+          "engagement": {
+            "upvotes": 65,
+            "downvotes": 19,
+            "comments_count": 12,
+            "expert_verifications": 0,
+            "community_trust_score": 0.752
+          },
+          "is_published": true,
+          "is_flagged": false,
+          "is_verified": true,
+          "created_at": "2025-11-13T18:33:08.835+00:00",
+          "updated_at": "2025-11-13T18:33:08.835+00:00",
+          "author": {
+            "id": "5c182750-fcde-4351-b673-ccd39277b391",
+            "badges": [
+              "system_user"
+            ],
+            "username": "system",
+            "full_name": "FactSaura System",
+            "is_expert": true,
+            "avatar_url": null,
+            "is_verified": true,
+            "reputation_score": 1000
+          }
+        }
+      ],
+      "pagination": {
+        "current_page": 1,
+        "per_page": 5,
+        "has_more": true,
+        "next_page": 2,
+        "prev_page": null,
+        "total_returned": 5
+      },
+      "filters": {
+        "urgency_level": null,
+        "location": null,
+        "is_misinformation": null,
+        "sort_by": "created_at",
+        "sort_order": "desc"
+      }
+    },
+    "familyTreeData": {
+      "success": true,
+      "data": {
+        "familyId": "dc023284-fd04-47cf-b4d2-87779b4f47ef",
+        "visualizationData": {
+          "nodes": [
+            {
+              "id": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "label": "Original",
+              "type": "original",
+              "generation": 0,
+              "depth": 0,
+              "childrenCount": 12,
+              "size": 50,
+              "color": "#ff4444"
+            },
+            {
+              "id": "fd1231e8-a3cb-428c-8568-bae906422d40",
+              "label": "emotional_amplification (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 3,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.92,
+              "size": 33,
+              "color": "#ff6644"
+            },
+            {
+              "id": "0fa0fa4c-6b4b-429f-9f79-c9300199fd52",
+              "label": "emotional_amplification (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 2,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.89,
+              "size": 28,
+              "color": "#ff6644"
+            },
+            {
+              "id": "04a4c457-a52d-43c6-8d96-20af9589181a",
+              "label": "emotional_amplification (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 2,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.87,
+              "size": 28,
+              "color": "#ff6644"
+            },
+            {
+              "id": "e238baf4-861f-49d1-b60d-43b36c9d3181",
+              "label": "numerical_change (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 2,
+              "mutationType": "numerical_change",
+              "confidence": 0.85,
+              "size": 28,
+              "color": "#8844ff"
+            },
+            {
+              "id": "d25ff098-c1d4-442e-902e-a8562c18c64a",
+              "label": "numerical_change (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 2,
+              "mutationType": "numerical_change",
+              "confidence": 0.83,
+              "size": 28,
+              "color": "#8844ff"
+            },
+            {
+              "id": "99be36d5-fcf9-4d9c-8e70-3c89aebbe65b",
+              "label": "numerical_change (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 2,
+              "mutationType": "numerical_change",
+              "confidence": 0.81,
+              "size": 28,
+              "color": "#8844ff"
+            },
+            {
+              "id": "22fcc365-8c9b-4193-84fa-95b4cdc17fd4",
+              "label": "phrase_addition (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 1,
+              "mutationType": "phrase_addition",
+              "confidence": 0.88,
+              "size": 23,
+              "color": "#ffaa44"
+            },
+            {
+              "id": "6ab1a37b-e49e-44a0-b01b-97176da6d89e",
+              "label": "phrase_addition (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 1,
+              "mutationType": "phrase_addition",
+              "confidence": 0.86,
+              "size": 23,
+              "color": "#ffaa44"
+            },
+            {
+              "id": "b0a19ecc-10d1-4900-9f9a-eacb32781ff2",
+              "label": "word_substitution (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 1,
+              "mutationType": "word_substitution",
+              "confidence": 0.9,
+              "size": 23,
+              "color": "#ff8844"
+            },
+            {
+              "id": "4be9a3dc-eb74-4d5c-acd4-26a0754fff87",
+              "label": "word_substitution (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 1,
+              "mutationType": "word_substitution",
+              "confidence": 0.84,
+              "size": 23,
+              "color": "#ff8844"
+            },
+            {
+              "id": "d835764f-e414-470a-9c86-9f8672d8f2cc",
+              "label": "source_modification (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 1,
+              "mutationType": "source_modification",
+              "confidence": 0.91,
+              "size": 23,
+              "color": "#ff4488"
+            },
+            {
+              "id": "bbbdb7b2-4e0d-4f19-af7f-c03e49450956",
+              "label": "source_modification (Gen 1)",
+              "type": "mutation",
+              "generation": 1,
+              "depth": 1,
+              "childrenCount": 1,
+              "mutationType": "source_modification",
+              "confidence": 0.89,
+              "size": 23,
+              "color": "#ff4488"
+            },
+            {
+              "id": "0dd29de0-8c46-4c23-9dff-de6e200d11cc",
+              "label": "phrase_addition (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "phrase_addition",
+              "confidence": 0.7520740184620833,
+              "size": 21,
+              "color": "#ffaa44"
+            },
+            {
+              "id": "34530558-83f9-432a-aa41-b510cc3580b3",
+              "label": "context_shift (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "context_shift",
+              "confidence": 0.748716058923934,
+              "size": 21,
+              "color": "#ffcc44"
+            },
+            {
+              "id": "af4f1515-6b0d-474a-a2d7-57d23c787dfe",
+              "label": "emotional_amplification (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.757697022925988,
+              "size": 21,
+              "color": "#ff6644"
+            },
+            {
+              "id": "dca3c298-6559-4274-affd-4e2d1ee5ee6a",
+              "label": "source_modification (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "source_modification",
+              "confidence": 0.7831571218871134,
+              "size": 21,
+              "color": "#ff4488"
+            },
+            {
+              "id": "ddb5e2ff-7d4a-4654-84fc-c0ced5e27d0c",
+              "label": "numerical_change (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "numerical_change",
+              "confidence": 0.7185963628351536,
+              "size": 21,
+              "color": "#8844ff"
+            },
+            {
+              "id": "5ec1334f-4c82-4477-a408-ff69393cc403",
+              "label": "location_change (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "location_change",
+              "confidence": 0.6858692784578069,
+              "size": 21,
+              "color": "#44ff88"
+            },
+            {
+              "id": "ae919678-0fc5-4f43-949e-4427c8bfd04e",
+              "label": "time_shift (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "time_shift",
+              "confidence": 0.7030780650130265,
+              "size": 21,
+              "color": "#4488ff"
+            },
+            {
+              "id": "4972c18e-fabd-4340-993d-32ae83e6dedd",
+              "label": "word_substitution (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "word_substitution",
+              "confidence": 0.6702433504099743,
+              "size": 21,
+              "color": "#ff8844"
+            },
+            {
+              "id": "cd748672-1a2e-487d-87fb-1f383743f4df",
+              "label": "phrase_addition (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "phrase_addition",
+              "confidence": 0.7259377794853223,
+              "size": 21,
+              "color": "#ffaa44"
+            },
+            {
+              "id": "10136b3f-2055-4faa-b3d6-75bae916c889",
+              "label": "context_shift (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "context_shift",
+              "confidence": 0.707584257310421,
+              "size": 21,
+              "color": "#ffcc44"
+            },
+            {
+              "id": "a70e829b-17d1-4868-82a9-18ef23ea06e2",
+              "label": "emotional_amplification (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.636498623841976,
+              "size": 21,
+              "color": "#ff6644"
+            },
+            {
+              "id": "5047fba1-a345-4910-b121-0ad4480a5397",
+              "label": "source_modification (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 1,
+              "mutationType": "source_modification",
+              "confidence": 0.6332683650069041,
+              "size": 21,
+              "color": "#ff4488"
+            },
+            {
+              "id": "1c79d188-8323-4c4f-9467-f623dd842387",
+              "label": "numerical_change (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "numerical_change",
+              "confidence": 0.7079887702462592,
+              "size": 16,
+              "color": "#8844ff"
+            },
+            {
+              "id": "80d67a9a-115f-41c2-9d09-cf63f257b74e",
+              "label": "location_change (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "location_change",
+              "confidence": 0.683060803125346,
+              "size": 16,
+              "color": "#44ff88"
+            },
+            {
+              "id": "ec14dbf3-222d-44d0-b9cc-0eb10f4185fe",
+              "label": "time_shift (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "time_shift",
+              "confidence": 0.7480951417861871,
+              "size": 16,
+              "color": "#4488ff"
+            },
+            {
+              "id": "1c664f92-f7ab-43a6-afe8-20c8c67e8211",
+              "label": "word_substitution (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "word_substitution",
+              "confidence": 0.7594326078175687,
+              "size": 16,
+              "color": "#ff8844"
+            },
+            {
+              "id": "f07dee31-ec47-4385-845b-21b01025d120",
+              "label": "phrase_addition (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "phrase_addition",
+              "confidence": 0.7066540720968653,
+              "size": 16,
+              "color": "#ffaa44"
+            },
+            {
+              "id": "4b6795ce-b214-4756-8177-4aace076c145",
+              "label": "context_shift (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "context_shift",
+              "confidence": 0.7867478342631463,
+              "size": 16,
+              "color": "#ffcc44"
+            },
+            {
+              "id": "d23b1974-fd13-4dd0-8cb4-0b9375bdf4b2",
+              "label": "emotional_amplification (Gen 2)",
+              "type": "mutation",
+              "generation": 2,
+              "depth": 2,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.7463050746450677,
+              "size": 16,
+              "color": "#ff6644"
+            },
+            {
+              "id": "ff705478-585f-498e-88e0-7b6e1c7acb99",
+              "label": "source_modification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 1,
+              "mutationType": "source_modification",
+              "confidence": 0.6020740184620833,
+              "size": 19,
+              "color": "#ff4488"
+            },
+            {
+              "id": "3d7a4de4-ff50-4465-9a36-771204eb7353",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 1,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.598716058923934,
+              "size": 19,
+              "color": "#ff6644"
+            },
+            {
+              "id": "8bcf6c91-73f4-4005-955f-c08be1019325",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 1,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.6076970229259879,
+              "size": 19,
+              "color": "#ff6644"
+            },
+            {
+              "id": "2ef4e5b7-939b-445e-96e0-981afeedeb8b",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.6331571218871134,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "45aa4686-ef24-4a15-8cba-1a42930ff888",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.5685963628351536,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "9f035cb1-2407-497a-89fb-3ca74b854a58",
+              "label": "source_modification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "source_modification",
+              "confidence": 0.5358692784578069,
+              "size": 14,
+              "color": "#ff4488"
+            },
+            {
+              "id": "e83ced71-c072-4d9e-aa4f-fbf35eaaf52d",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.5530780650130265,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "3ecdf615-55c3-46a7-8d3a-41f8246658b6",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.5202433504099743,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "d723b822-c971-43a2-a4e0-6fe34be0b409",
+              "label": "source_modification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "source_modification",
+              "confidence": 0.5759377794853223,
+              "size": 14,
+              "color": "#ff4488"
+            },
+            {
+              "id": "55df3942-3400-45ef-bae0-905c60ae51f5",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.5575842573104209,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "09a0cba5-b986-4f37-8d4a-f2764ae26403",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.5,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "a187882b-7db5-415a-afa1-e8e5eaa9a9d5",
+              "label": "emotional_amplification (Gen 3)",
+              "type": "mutation",
+              "generation": 3,
+              "depth": 3,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.5,
+              "size": 14,
+              "color": "#ff6644"
+            },
+            {
+              "id": "f5329404-b950-497d-bcb7-e7bdae23d760",
+              "label": "emotional_amplification (Gen 4)",
+              "type": "mutation",
+              "generation": 4,
+              "depth": 4,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.4020740184620833,
+              "size": 12,
+              "color": "#ff6644"
+            },
+            {
+              "id": "b47baa10-7350-47b9-be27-d854dd7c240d",
+              "label": "emotional_amplification (Gen 4)",
+              "type": "mutation",
+              "generation": 4,
+              "depth": 4,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.4,
+              "size": 12,
+              "color": "#ff6644"
+            },
+            {
+              "id": "a32d9e8d-11fd-4f34-a9b3-3095c9d4f62d",
+              "label": "emotional_amplification (Gen 4)",
+              "type": "mutation",
+              "generation": 4,
+              "depth": 4,
+              "childrenCount": 0,
+              "mutationType": "emotional_amplification",
+              "confidence": 0.4076970229259879,
+              "size": 12,
+              "color": "#ff6644"
+            }
+          ],
+          "edges": [
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "fd1231e8-a3cb-428c-8568-bae906422d40",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "0fa0fa4c-6b4b-429f-9f79-c9300199fd52",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "04a4c457-a52d-43c6-8d96-20af9589181a",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "e238baf4-861f-49d1-b60d-43b36c9d3181",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "d25ff098-c1d4-442e-902e-a8562c18c64a",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "99be36d5-fcf9-4d9c-8e70-3c89aebbe65b",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "22fcc365-8c9b-4193-84fa-95b4cdc17fd4",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "6ab1a37b-e49e-44a0-b01b-97176da6d89e",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "b0a19ecc-10d1-4900-9f9a-eacb32781ff2",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "4be9a3dc-eb74-4d5c-acd4-26a0754fff87",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "d835764f-e414-470a-9c86-9f8672d8f2cc",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7",
+              "to": "bbbdb7b2-4e0d-4f19-af7f-c03e49450956",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "fd1231e8-a3cb-428c-8568-bae906422d40",
+              "to": "0dd29de0-8c46-4c23-9dff-de6e200d11cc",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "fd1231e8-a3cb-428c-8568-bae906422d40",
+              "to": "34530558-83f9-432a-aa41-b510cc3580b3",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "fd1231e8-a3cb-428c-8568-bae906422d40",
+              "to": "af4f1515-6b0d-474a-a2d7-57d23c787dfe",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "0fa0fa4c-6b4b-429f-9f79-c9300199fd52",
+              "to": "dca3c298-6559-4274-affd-4e2d1ee5ee6a",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "0fa0fa4c-6b4b-429f-9f79-c9300199fd52",
+              "to": "ddb5e2ff-7d4a-4654-84fc-c0ced5e27d0c",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "04a4c457-a52d-43c6-8d96-20af9589181a",
+              "to": "5ec1334f-4c82-4477-a408-ff69393cc403",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "04a4c457-a52d-43c6-8d96-20af9589181a",
+              "to": "ae919678-0fc5-4f43-949e-4427c8bfd04e",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "e238baf4-861f-49d1-b60d-43b36c9d3181",
+              "to": "4972c18e-fabd-4340-993d-32ae83e6dedd",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "e238baf4-861f-49d1-b60d-43b36c9d3181",
+              "to": "cd748672-1a2e-487d-87fb-1f383743f4df",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "d25ff098-c1d4-442e-902e-a8562c18c64a",
+              "to": "10136b3f-2055-4faa-b3d6-75bae916c889",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "d25ff098-c1d4-442e-902e-a8562c18c64a",
+              "to": "a70e829b-17d1-4868-82a9-18ef23ea06e2",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "99be36d5-fcf9-4d9c-8e70-3c89aebbe65b",
+              "to": "5047fba1-a345-4910-b121-0ad4480a5397",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "99be36d5-fcf9-4d9c-8e70-3c89aebbe65b",
+              "to": "1c79d188-8323-4c4f-9467-f623dd842387",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "22fcc365-8c9b-4193-84fa-95b4cdc17fd4",
+              "to": "80d67a9a-115f-41c2-9d09-cf63f257b74e",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "6ab1a37b-e49e-44a0-b01b-97176da6d89e",
+              "to": "ec14dbf3-222d-44d0-b9cc-0eb10f4185fe",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "b0a19ecc-10d1-4900-9f9a-eacb32781ff2",
+              "to": "1c664f92-f7ab-43a6-afe8-20c8c67e8211",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "4be9a3dc-eb74-4d5c-acd4-26a0754fff87",
+              "to": "f07dee31-ec47-4385-845b-21b01025d120",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "d835764f-e414-470a-9c86-9f8672d8f2cc",
+              "to": "4b6795ce-b214-4756-8177-4aace076c145",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "bbbdb7b2-4e0d-4f19-af7f-c03e49450956",
+              "to": "d23b1974-fd13-4dd0-8cb4-0b9375bdf4b2",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "0dd29de0-8c46-4c23-9dff-de6e200d11cc",
+              "to": "ff705478-585f-498e-88e0-7b6e1c7acb99",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "34530558-83f9-432a-aa41-b510cc3580b3",
+              "to": "3d7a4de4-ff50-4465-9a36-771204eb7353",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "af4f1515-6b0d-474a-a2d7-57d23c787dfe",
+              "to": "8bcf6c91-73f4-4005-955f-c08be1019325",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "dca3c298-6559-4274-affd-4e2d1ee5ee6a",
+              "to": "2ef4e5b7-939b-445e-96e0-981afeedeb8b",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "ddb5e2ff-7d4a-4654-84fc-c0ced5e27d0c",
+              "to": "45aa4686-ef24-4a15-8cba-1a42930ff888",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "5ec1334f-4c82-4477-a408-ff69393cc403",
+              "to": "9f035cb1-2407-497a-89fb-3ca74b854a58",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "ae919678-0fc5-4f43-949e-4427c8bfd04e",
+              "to": "e83ced71-c072-4d9e-aa4f-fbf35eaaf52d",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "4972c18e-fabd-4340-993d-32ae83e6dedd",
+              "to": "3ecdf615-55c3-46a7-8d3a-41f8246658b6",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "cd748672-1a2e-487d-87fb-1f383743f4df",
+              "to": "d723b822-c971-43a2-a4e0-6fe34be0b409",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "10136b3f-2055-4faa-b3d6-75bae916c889",
+              "to": "55df3942-3400-45ef-bae0-905c60ae51f5",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "a70e829b-17d1-4868-82a9-18ef23ea06e2",
+              "to": "09a0cba5-b986-4f37-8d4a-f2764ae26403",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "5047fba1-a345-4910-b121-0ad4480a5397",
+              "to": "a187882b-7db5-415a-afa1-e8e5eaa9a9d5",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "ff705478-585f-498e-88e0-7b6e1c7acb99",
+              "to": "f5329404-b950-497d-bcb7-e7bdae23d760",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "3d7a4de4-ff50-4465-9a36-771204eb7353",
+              "to": "b47baa10-7350-47b9-be27-d854dd7c240d",
+              "type": "mutation",
+              "weight": 0.5
+            },
+            {
+              "from": "8bcf6c91-73f4-4005-955f-c08be1019325",
+              "to": "a32d9e8d-11fd-4f34-a9b3-3095c9d4f62d",
+              "type": "mutation",
+              "weight": 0.5
+            }
+          ],
+          "levels": {
+            "0": [
+              "bad7f5ae-6bad-42ab-bfbd-7b3441a340f7"
+            ],
+            "1": [
+              "fd1231e8-a3cb-428c-8568-bae906422d40",
+              "0fa0fa4c-6b4b-429f-9f79-c9300199fd52",
+              "04a4c457-a52d-43c6-8d96-20af9589181a",
+              "e238baf4-861f-49d1-b60d-43b36c9d3181",
+              "d25ff098-c1d4-442e-902e-a8562c18c64a",
+              "99be36d5-fcf9-4d9c-8e70-3c89aebbe65b",
+              "22fcc365-8c9b-4193-84fa-95b4cdc17fd4",
+              "6ab1a37b-e49e-44a0-b01b-97176da6d89e",
+              "b0a19ecc-10d1-4900-9f9a-eacb32781ff2",
+              "4be9a3dc-eb74-4d5c-acd4-26a0754fff87",
+              "d835764f-e414-470a-9c86-9f8672d8f2cc",
+              "bbbdb7b2-4e0d-4f19-af7f-c03e49450956"
+            ],
+            "2": [
+              "0dd29de0-8c46-4c23-9dff-de6e200d11cc",
+              "34530558-83f9-432a-aa41-b510cc3580b3",
+              "af4f1515-6b0d-474a-a2d7-57d23c787dfe",
+              "dca3c298-6559-4274-affd-4e2d1ee5ee6a",
+              "ddb5e2ff-7d4a-4654-84fc-c0ced5e27d0c",
+              "5ec1334f-4c82-4477-a408-ff69393cc403",
+              "ae919678-0fc5-4f43-949e-4427c8bfd04e",
+              "4972c18e-fabd-4340-993d-32ae83e6dedd",
+              "cd748672-1a2e-487d-87fb-1f383743f4df",
+              "10136b3f-2055-4faa-b3d6-75bae916c889",
+              "a70e829b-17d1-4868-82a9-18ef23ea06e2",
+              "5047fba1-a345-4910-b121-0ad4480a5397",
+              "1c79d188-8323-4c4f-9467-f623dd842387",
+              "80d67a9a-115f-41c2-9d09-cf63f257b74e",
+              "ec14dbf3-222d-44d0-b9cc-0eb10f4185fe",
+              "1c664f92-f7ab-43a6-afe8-20c8c67e8211",
+              "f07dee31-ec47-4385-845b-21b01025d120",
+              "4b6795ce-b214-4756-8177-4aace076c145",
+              "d23b1974-fd13-4dd0-8cb4-0b9375bdf4b2"
+            ],
+            "3": [
+              "ff705478-585f-498e-88e0-7b6e1c7acb99",
+              "3d7a4de4-ff50-4465-9a36-771204eb7353",
+              "8bcf6c91-73f4-4005-955f-c08be1019325",
+              "2ef4e5b7-939b-445e-96e0-981afeedeb8b",
+              "45aa4686-ef24-4a15-8cba-1a42930ff888",
+              "9f035cb1-2407-497a-89fb-3ca74b854a58",
+              "e83ced71-c072-4d9e-aa4f-fbf35eaaf52d",
+              "3ecdf615-55c3-46a7-8d3a-41f8246658b6",
+              "d723b822-c971-43a2-a4e0-6fe34be0b409",
+              "55df3942-3400-45ef-bae0-905c60ae51f5",
+              "09a0cba5-b986-4f37-8d4a-f2764ae26403",
+              "a187882b-7db5-415a-afa1-e8e5eaa9a9d5"
+            ],
+            "4": [
+              "f5329404-b950-497d-bcb7-e7bdae23d760",
+              "b47baa10-7350-47b9-be27-d854dd7c240d",
+              "a32d9e8d-11fd-4f34-a9b3-3095c9d4f62d"
+            ]
+          },
+          "layout": {
+            "type": "hierarchical",
+            "direction": "top-down",
+            "levelSeparation": 100,
+            "nodeSeparation": 80
+          },
+          "statistics": {
+            "totalNodes": 47,
+            "totalEdges": 46,
+            "maxDepth": 4,
+            "leafNodes": 19
+          }
+        }
+      }
+    },
+    "demoEndpoints": true,
+    "performanceMetrics": true
+  },
+  "summary": {
+    "successRate": 100,
+    "passedTests": 7,
+    "totalTests": 7
+  }
+}

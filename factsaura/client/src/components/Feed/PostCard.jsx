@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { GlassCard, AnimatedButton, ConfidenceMeter } from '../UI';
+import { AIAnalysisDisplay, AIBadge, CrisisUrgencyIndicator } from '../AI';
 
 function PostCard({ post, onVote, onAskAI, onShare, onReport, className = '' }) {
   const [showReasoningSteps, setShowReasoningSteps] = useState(false);
@@ -93,42 +94,56 @@ function PostCard({ post, onVote, onAskAI, onShare, onReport, className = '' }) 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={className}
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ y: -4, scale: 1.01 }}
+      transition={{ 
+        duration: 0.4,
+        ease: "easeOut",
+        hover: { duration: 0.2 }
+      }}
+      className={`${className} click-ripple`}
     >
-      <div className={`glass-card ${alertLevel.bg} p-6`}>
-        {/* Post Header */}
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <div className={`text-2xl ${alertLevel.color}`}>
+      <div className={`glass-card ${alertLevel.bg} p-6 hover-lift`}>
+        {/* Post Header - Mobile Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+          <div className="flex items-center space-x-3 min-w-0 flex-1">
+            <div className={`text-2xl sm:text-3xl ${alertLevel.color} flex-shrink-0`}>
               {alertLevel.icon}
             </div>
-            <div>
-              <span className="text-secondary text-sm font-medium">
-                {post.type === 'ai_detected' ? '🤖 AI Detected' : '👤 User Submitted'}
-              </span>
-              <span className="text-secondary text-sm ml-2">
-                • {formatTimestamp(post.created_at)}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span className="text-secondary text-sm font-medium truncate">
+                  {post.type === 'ai_detected' ? '🤖 AI Detected' : '👤 User Submitted'}
+                </span>
+                <AIBadge 
+                  type={post.type === 'ai_detected' ? 'generated' : 'analyzed'} 
+                  size="xs" 
+                  animated={true}
+                />
+              </div>
+              <span className="text-secondary text-sm">
+                {formatTimestamp(post.created_at)}
               </span>
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
+          {/* Status Badges - Stack on mobile */}
+          <div className="flex flex-wrap items-center gap-2 sm:flex-shrink-0">
             {post.is_verified && (
-              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium border border-green-200">
+              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-green-200 whitespace-nowrap">
                 ✓ Verified
               </span>
             )}
             {aiAnalysis.is_misinformation && (
-              <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium border border-red-200">
-                ⚠️ MISINFORMATION
-              </span>
+              <AIBadge type="flagged" size="sm" animated={true} />
             )}
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getAlertLevelBadge(crisisContext.urgency_level, aiAnalysis.is_misinformation)}`}>
-              {crisisContext.urgency_level?.toUpperCase() || 'MEDIUM'}
-            </span>
+            <CrisisUrgencyIndicator 
+              urgencyLevel={crisisContext.urgency_level || 'medium'}
+              harmCategory={crisisContext.harm_category || 'general'}
+              size="sm"
+              animated={true}
+            />
           </div>
         </div>
 
@@ -185,120 +200,64 @@ function PostCard({ post, onVote, onAskAI, onShare, onReport, className = '' }) 
 
         {/* AI Analysis - Enhanced Display */}
         {(aiAnalysis || aiAnalysis.confidence_score !== undefined) && (
-          <div className="mb-6 p-4 content-box rounded-xl">
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0">
-                <ConfidenceMeter confidence={aiAnalysis.confidence_score || 0} size="md" />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-primary font-bold mb-3 flex items-center text-sm">
-                  <span className="mr-2">🤖</span>
-                  AI Analysis
-                  <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium border border-blue-200">
-                    {Math.round((aiAnalysis.confidence_score || 0) * 100)}% Confidence
-                  </span>
-                </h4>
-                
-                <p className="text-primary text-sm leading-relaxed mb-3">
-                  {aiAnalysis.explanation || 'AI analysis completed successfully.'}
-                </p>
-                
-                {/* Reasoning Steps */}
-                {aiAnalysis.reasoning_steps && aiAnalysis.reasoning_steps.length > 0 && (
-                  <div className="mt-3">
-                    <button
-                      onClick={() => setShowReasoningSteps(!showReasoningSteps)}
-                      className="text-info hover:text-blue-700 text-xs font-medium flex items-center"
-                    >
-                      <span className="mr-1">{showReasoningSteps ? '▼' : '▶'}</span>
-                      View AI Reasoning Steps ({aiAnalysis.reasoning_steps.length})
-                    </button>
-                    
-                    {showReasoningSteps && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-2 space-y-2"
-                      >
-                        {aiAnalysis.reasoning_steps.map((step, index) => (
-                          <div key={index} className="flex items-start bg-blue-50 p-2 rounded border border-blue-200">
-                            <span className="mr-2 text-info font-bold text-xs min-w-[20px]">
-                              {index + 1}.
-                            </span>
-                            <span className="text-primary text-xs leading-relaxed">{step}</span>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </div>
-                )}
-                
-                {/* Uncertainty Flags */}
-                {aiAnalysis.uncertainty_flags && aiAnalysis.uncertainty_flags.length > 0 && (
-                  <div className="mt-3 p-2 bg-amber-50 rounded border border-amber-200">
-                    <h5 className="text-warning font-semibold text-xs mb-1">⚠️ Uncertainty Indicators:</h5>
-                    <div className="flex flex-wrap gap-1">
-                      {aiAnalysis.uncertainty_flags.map((flag, index) => (
-                        <span key={index} className="text-amber-700 text-xs">
-                          • {flag.replace(/_/g, ' ')}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <AIAnalysisDisplay analysis={aiAnalysis} className="mb-6" />
         )}
 
-        {/* Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-3">
+        {/* Actions - Mobile Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* Primary Actions */}
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             <AnimatedButton 
               variant="success" 
               size="sm"
               onClick={() => handleVote('upvote')}
-              className="glass-button-outlined hover:bg-green-600 hover:text-white"
+              className="glass-button-outlined hover:bg-green-600 hover:text-white min-h-[44px] px-4 touch-manipulation"
             >
-              <span className="mr-1">👍</span>
-              {engagement.upvotes || 0}
+              <span className="mr-1 text-lg">👍</span>
+              <span className="hidden xs:inline">{engagement.upvotes || 0}</span>
+              <span className="xs:hidden">{engagement.upvotes || 0}</span>
             </AnimatedButton>
             <AnimatedButton 
               variant="danger" 
               size="sm"
               onClick={() => handleVote('downvote')}
-              className="glass-button-outlined hover:bg-red-600 hover:text-white"
+              className="glass-button-outlined hover:bg-red-600 hover:text-white min-h-[44px] px-4 touch-manipulation"
             >
-              <span className="mr-1">👎</span>
-              {engagement.downvotes || 0}
+              <span className="mr-1 text-lg">👎</span>
+              <span className="hidden xs:inline">{engagement.downvotes || 0}</span>
+              <span className="xs:hidden">{engagement.downvotes || 0}</span>
             </AnimatedButton>
             <AnimatedButton 
               variant="ghost" 
               size="sm"
               onClick={handleAskAI}
-              className="glass-button-outlined hover:bg-blue-600 hover:text-white"
+              className="glass-button-outlined hover:bg-blue-600 hover:text-white min-h-[44px] px-4 touch-manipulation"
             >
-              🤖 Ask AI
+              <span className="text-lg mr-1">🤖</span>
+              <span className="hidden sm:inline">Ask AI</span>
+              <span className="sm:hidden">AI</span>
             </AnimatedButton>
           </div>
           
-          <div className="flex space-x-2">
+          {/* Secondary Actions */}
+          <div className="flex flex-wrap gap-2 sm:gap-2">
             <AnimatedButton 
               variant="outline" 
               size="sm"
               onClick={handleShare}
-              className="glass-button-outlined"
+              className="glass-button-outlined min-h-[44px] px-4 touch-manipulation flex-1 sm:flex-none"
             >
-              📤 Share
+              <span className="text-lg mr-1">📤</span>
+              <span className="hidden sm:inline">Share</span>
             </AnimatedButton>
             <AnimatedButton 
               variant="warning" 
               size="sm"
               onClick={handleReport}
-              className="glass-button-outlined hover:bg-amber-600 hover:text-white"
+              className="glass-button-outlined hover:bg-amber-600 hover:text-white min-h-[44px] px-4 touch-manipulation flex-1 sm:flex-none"
             >
-              🚩 Report
+              <span className="text-lg mr-1">🚩</span>
+              <span className="hidden sm:inline">Report</span>
             </AnimatedButton>
           </div>
         </div>
